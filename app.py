@@ -134,27 +134,17 @@ def get_twilio_client():
 def send_assistance_sms(demande_id, client, chauffeur, telephone, immatriculation, latitude, longitude, type_panne, lieu, dimension, urgence, commentaire):
     client_twilio = get_twilio_client()
 
-    body = f"""
-🚨 Nouvelle demande de dépannage
-
-ID : {demande_id}
-Client : {client}
-Chauffeur : {chauffeur}
-Téléphone : {telephone}
-Immatriculation : {immatriculation}
-
-Panne : {type_panne}
-Lieu : {lieu}
-Dimension : {dimension}
-Urgence : {urgence}
-
-GPS : {latitude}, {longitude}
-
-Commentaire :
-{commentaire}
-
-Orane Roadside Assistance
-"""
+    body = (
+        f"ALERTE DEPANNAGE\n"
+        f"ID:{demande_id}\n"
+        f"Client:{client}\n"
+        f"Chauffeur:{chauffeur}\n"
+        f"Tel:{telephone}\n"
+        f"Vehicule:{immatriculation}\n"
+        f"Panne:{type_panne}\n"
+        f"Urgence:{urgence}\n"
+        f"GPS:{latitude},{longitude}"
+    )
 
     message = client_twilio.messages.create(
         body=body,
