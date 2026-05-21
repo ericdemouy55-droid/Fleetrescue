@@ -187,8 +187,8 @@ def init_data():
         pd.DataFrame(columns=[
             "id", "date_creation", "client", "chauffeur",
             "telephone_chauffeur", "immatriculation", "latitude",
-            "longitude", "type_panne", "lieu", "dimension", "statut",
-            "depanneur_assigne", "distance_km", "mode_paiement",
+            "longitude", "type_panne", "lieu", "dimension", "urgence",
+            "statut", "depanneur_assigne", "distance_km", "mode_paiement",
             "commentaire", "photo_1", "photo_2", "date_cloture"
         ]).to_csv(DEMANDES_FILE, index=False)
 
@@ -265,7 +265,7 @@ def trouver_depanneurs(demande, depanneurs):
 # CARTE FOLIUM
 # ============================================================
 
-def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur, immatriculation, type_panne, dimension):
+def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur, immatriculation, type_panne, dimension, urgence):
     if candidats.empty:
         return
 
@@ -287,7 +287,8 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
         Chauffeur : {chauffeur}<br>
         Immatriculation : {immatriculation}<br>
         Panne : {type_panne}<br>
-        Dimension : {dimension}
+        Dimension : {dimension}<br>
+        Urgence : {urgence}
         """,
         icon=folium.Icon(
             color="red",
@@ -339,9 +340,9 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
         ).add_to(m)
 
     components.html(
-    m._repr_html_(),
-    height=550
-)
+        m._repr_html_(),
+        height=550
+    )
 
 
 # ============================================================
@@ -527,20 +528,37 @@ with tab1:
 
         mode_paiement = st.radio("Paiement", ["Client en compte", "CB / Apple Pay"], horizontal=True)
 
+        urgence = st.selectbox(
+            "Niveau d'urgence",
+            [
+                "Standard",
+                "Urgent",
+                "Danger immédiat / voie rapide"
+            ]
+        )
+
         commentaire = st.text_area(
             "Commentaire",
             "Véhicule immobilisé. Demande urgente."
         )
-photos = st.file_uploader(
-    "Ajouter jusqu'à 2 photos",
-    type=["jpg", "jpeg", "png"],
-    accept_multiple_files=True
-)
 
-if photos and len(photos) > 2:
-    st.error("Merci de limiter l'ajout à 2 photos maximum.")
-    photos = photos[:2]
-    if st.button("🚨 Demander un dépannage", type="primary"):
+        photos = st.file_uploader(
+            "Ajouter jusqu'à 2 photos",
+            type=["jpg", "jpeg", "png"],
+            accept_multiple_files=True
+        )
+
+        if photos and len(photos) > 2:
+            st.error("Merci de limiter l'ajout à 2 photos maximum.")
+            photos = photos[:2]
+
+    st.divider()
+
+    if st.button(
+        "🚨 DEMANDER UN DÉPANNAGE",
+        type="primary",
+        use_container_width=True
+    ):
         depanneurs = load_csv(DEPANNEURS_FILE)
         demandes = load_csv(DEMANDES_FILE)
 
@@ -558,13 +576,14 @@ if photos and len(photos) > 2:
             "type_panne": type_panne,
             "lieu": lieu,
             "dimension": dimension,
+            "urgence": urgence,
             "statut": "Recherche dépanneur",
             "depanneur_assigne": "",
             "distance_km": "",
             "mode_paiement": mode_paiement,
             "commentaire": commentaire,
             "photo_1": photos[0].name if photos and len(photos) > 0 else "",
-"photo_2": photos[1].name if photos and len(photos) > 1 else "",
+            "photo_2": photos[1].name if photos and len(photos) > 1 else "",
             "date_cloture": "",
         }
 
@@ -582,7 +601,8 @@ if photos and len(photos) > 2:
                 chauffeur=chauffeur,
                 immatriculation=immatriculation,
                 type_panne=type_panne,
-                dimension=dimension
+                dimension=dimension,
+                urgence=urgence
             )
 
             creer_tentatives(demande_id, candidats)
