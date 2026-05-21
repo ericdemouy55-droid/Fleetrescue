@@ -563,6 +563,8 @@ if photos and len(photos) > 2:
             "distance_km": "",
             "mode_paiement": mode_paiement,
             "commentaire": commentaire,
+            "photo_1": photos[0].name if photos and len(photos) > 0 else "",
+"photo_2": photos[1].name if photos and len(photos) > 1 else "",
             "date_cloture": "",
         }
 
