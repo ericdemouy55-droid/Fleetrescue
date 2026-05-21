@@ -355,7 +355,39 @@ def cloturer(demande_id):
 # ============================================================
 
 init_data()
+k1, k2, k3, k4 = st.columns(4)
 
+with k1:
+    st.markdown("""
+    <div class="kpi-card">
+        <div class="kpi-title">Dépannages actifs</div>
+        <div class="kpi-value">14</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with k2:
+    st.markdown("""
+    <div class="kpi-card">
+        <div class="kpi-title">Temps moyen</div>
+        <div class="kpi-value">18 min</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with k3:
+    st.markdown("""
+    <div class="kpi-card">
+        <div class="kpi-title">Dépanneurs connectés</div>
+        <div class="kpi-value">128</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with k4:
+    st.markdown("""
+    <div class="kpi-card">
+        <div class="kpi-title">SLA respecté</div>
+        <div class="kpi-value">98%</div>
+    </div>
+    """, unsafe_allow_html=True)
 tab1, tab2, tab3, tab4 = st.tabs([
     "🚨 Demande chauffeur",
     "🧭 Superviseur",
