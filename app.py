@@ -9,7 +9,16 @@ import pandas as pd
 import streamlit as st
 
 st.set_page_config(page_title="FleetPartner Rescue 24/7", page_icon="🛞", layout="wide")
+logo = Image.open("assets/fleetpartner_logo.png")
 
+col1, col2 = st.columns([1, 4])
+
+with col1:
+    st.image(logo, width=180)
+
+with col2:
+    st.title("FleetPartner Rescue 24/7")
+    st.caption("Plateforme intelligente de dépannage poids lourds")
 DATA_DIR = Path("data")
 DATA_DIR.mkdir(exist_ok=True)
 DEPANNEURS_FILE = DATA_DIR / "depanneurs_demo.csv"
