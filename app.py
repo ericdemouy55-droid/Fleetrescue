@@ -12,7 +12,7 @@ import streamlit as st
 # ============================================================
 
 st.set_page_config(
-    page_title="FleetPartner Rescue 24/7",
+    page_title="Orane Roadside Assistance"
     page_icon="🛞",
     layout="wide"
 )
