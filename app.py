@@ -531,7 +531,15 @@ with tab1:
             "Commentaire",
             "Véhicule immobilisé. Demande urgente."
         )
+photos = st.file_uploader(
+    "Ajouter jusqu'à 2 photos",
+    type=["jpg", "jpeg", "png"],
+    accept_multiple_files=True
+)
 
+if photos and len(photos) > 2:
+    st.error("Merci de limiter l'ajout à 2 photos maximum.")
+    photos = photos[:2]
     if st.button("🚨 Demander un dépannage", type="primary"):
         depanneurs = load_csv(DEPANNEURS_FILE)
         demandes = load_csv(DEMANDES_FILE)
