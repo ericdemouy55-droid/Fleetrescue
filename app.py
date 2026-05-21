@@ -484,7 +484,25 @@ with tab1:
         }
 
         candidats = trouver_depanneurs(demande, depanneurs)
+# ============================================================
+# CARTE DES DEPANNEURS
+# ============================================================
 
+if not candidats.empty:
+
+    carte_df = candidats[["latitude", "longitude"]].copy()
+
+    # ajout position camion
+    camion_df = pd.DataFrame([{
+        "latitude": latitude,
+        "longitude": longitude
+    }])
+
+    carte_df = pd.concat([carte_df, camion_df])
+
+    st.markdown("### 🗺️ Dépanneurs à proximité")
+
+    st.map(carte_df)
         if candidats.empty:
             demande["statut"] = "A traiter manuellement"
             st.error("Aucun dépanneur éligible trouvé. Bascule en traitement manuel.")
