@@ -189,7 +189,7 @@ def init_data():
             "telephone_chauffeur", "immatriculation", "latitude",
             "longitude", "type_panne", "lieu", "dimension", "statut",
             "depanneur_assigne", "distance_km", "mode_paiement",
-            "commentaire", "date_cloture"
+            "commentaire", "photo_1", "photo_2", "date_cloture"
         ]).to_csv(DEMANDES_FILE, index=False)
 
     if not TENTATIVES_FILE.exists():
