@@ -338,7 +338,10 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
             opacity=0.7
         ).add_to(m)
 
-    st_folium(m, width=1200, height=500)
+    components.html(
+    m._repr_html_(),
+    height=550
+)
 
 
 # ============================================================
