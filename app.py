@@ -3,8 +3,10 @@ import uuid
 from datetime import datetime
 from pathlib import Path
 
+import folium
 import pandas as pd
 import streamlit as st
+from streamlit_folium import st_folium
 
 
 # ============================================================
@@ -16,6 +18,7 @@ st.set_page_config(
     page_icon="🚛",
     layout="wide"
 )
+
 
 # ============================================================
 # STYLE CSS
@@ -109,6 +112,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+
 # ============================================================
 # HEADER AVEC LOGO
 # ============================================================
@@ -120,6 +124,8 @@ col_logo, col_title = st.columns([1, 5])
 with col_logo:
     if LOGO_FILE.exists():
         st.image(str(LOGO_FILE), width=180)
+    else:
+        st.markdown("")
 
 with col_title:
     st.markdown("""
@@ -131,22 +137,6 @@ with col_title:
     </div>
     """, unsafe_allow_html=True)
 
-
-# ============================================================
-# FICHIERS DATA
-# ============================================================
-
-DATA_DIR = Path("data")
-
-# Sécurité : si "data" existe par erreur comme fichier, on le supprime
-if DATA_DIR.exists() and not DATA_DIR.is_dir():
-    DATA_DIR.unlink()
-
-DATA_DIR.mkdir(exist_ok=True)
-
-DEPANNEURS_FILE = DATA_DIR / "depanneurs_demo.csv"
-DEMANDES_FILE = DATA_DIR / "demandes_demo.csv"
-TENTATIVES_FILE = DATA_DIR / "tentatives_demo.csv"
 
 # ============================================================
 # FICHIERS DATA
@@ -272,6 +262,86 @@ def trouver_depanneurs(demande, depanneurs):
 
 
 # ============================================================
+# CARTE FOLIUM
+# ============================================================
+
+def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur, immatriculation, type_panne, dimension):
+    if candidats.empty:
+        return
+
+    st.markdown("### 🗺️ Carte des dépanneurs à proximité")
+
+    m = folium.Map(
+        location=[latitude, longitude],
+        zoom_start=8,
+        tiles="OpenStreetMap"
+    )
+
+    # Camion en panne
+    folium.Marker(
+        location=[latitude, longitude],
+        tooltip="Camion en panne",
+        popup=f"""
+        <b>🚛 Camion en panne</b><br>
+        Client : {client}<br>
+        Chauffeur : {chauffeur}<br>
+        Immatriculation : {immatriculation}<br>
+        Panne : {type_panne}<br>
+        Dimension : {dimension}
+        """,
+        icon=folium.Icon(
+            color="red",
+            icon="truck",
+            prefix="fa"
+        )
+    ).add_to(m)
+
+    # Cercle rouge pour rendre la position du camion très visible
+    folium.CircleMarker(
+        location=[latitude, longitude],
+        radius=14,
+        color="red",
+        fill=True,
+        fill_color="red",
+        fill_opacity=0.35,
+        popup="Zone de panne"
+    ).add_to(m)
+
+    # Dépanneurs proches
+    for _, d in candidats.iterrows():
+        folium.Marker(
+            location=[d["latitude"], d["longitude"]],
+            tooltip=f'{d["nom"]} - {d["distance_km"]} km',
+            popup=f"""
+            <b>🛠️ {d["nom"]}</b><br>
+            Ville : {d["ville"]}<br>
+            Réseau : {d["reseau"]}<br>
+            Distance : {d["distance_km"]} km<br>
+            Téléphone : {d["telephone"]}<br>
+            Stock : {d["stock"]}
+            """,
+            icon=folium.Icon(
+                color="green",
+                icon="wrench",
+                prefix="fa"
+            )
+        ).add_to(m)
+
+        # Ligne camion → dépanneur
+        folium.PolyLine(
+            locations=[
+                [latitude, longitude],
+                [d["latitude"], d["longitude"]]
+            ],
+            color="orange",
+            weight=2,
+            opacity=0.7
+        ).add_to(m)
+
+    st_folium(m, width=1200, height=500)
+
+
+# ============================================================
 # CASCADE DE SOLLICITATION
 # ============================================================
 
@@ -376,6 +446,7 @@ def cloturer(demande_id):
 # ============================================================
 
 init_data()
+
 k1, k2, k3, k4 = st.columns(4)
 
 with k1:
@@ -409,6 +480,7 @@ with k4:
         <div class="kpi-value">98%</div>
     </div>
     """, unsafe_allow_html=True)
+
 tab1, tab2, tab3, tab4 = st.tabs([
     "🚨 Demande chauffeur",
     "🧭 Superviseur",
@@ -485,32 +557,25 @@ with tab1:
 
         candidats = trouver_depanneurs(demande, depanneurs)
 
-        # ============================================================
-        # CARTE DES DEPANNEURS
-        # ============================================================
-
-        if not candidats.empty:
-
-            carte_df = candidats[["latitude", "longitude"]].copy()
-
-            # ajout position camion
-            camion_df = pd.DataFrame([{
-                "latitude": latitude,
-                "longitude": longitude
-            }])
-
-            carte_df = pd.concat([carte_df, camion_df])
-
-            st.markdown("### 🗺️ Dépanneurs à proximité")
-
-            st.map(carte_df)
-
         if candidats.empty:
             demande["statut"] = "A traiter manuellement"
             st.error("Aucun dépanneur éligible trouvé. Bascule en traitement manuel.")
         else:
+            afficher_carte_depanneurs(
+                latitude=latitude,
+                longitude=longitude,
+                candidats=candidats,
+                client=client,
+                chauffeur=chauffeur,
+                immatriculation=immatriculation,
+                type_panne=type_panne,
+                dimension=dimension
+            )
+
             creer_tentatives(demande_id, candidats)
+
             st.success(f"Demande créée : {demande_id}. Alerte envoyée au dépanneur le plus proche.")
+
             st.dataframe(
                 candidats[["nom", "reseau", "ville", "distance_km", "telephone", "stock", "score"]],
                 use_container_width=True,
