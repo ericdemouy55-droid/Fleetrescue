@@ -3,6 +3,7 @@ import math
 import uuid
 from datetime import datetime
 from pathlib import Path
+from PIL import Image
 
 import pandas as pd
 import streamlit as st
