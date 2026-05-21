@@ -9,7 +9,19 @@ import pandas as pd
 import streamlit as st
 
 st.set_page_config(page_title="FleetPartner Rescue 24/7", page_icon="🛞", layout="wide")
-logo = Image.open("assets/fleetpartner_logo.png")
+LOGO_FILE = Path("assets") / "fleetpartner_logo.png"
+
+col1, col2 = st.columns([1, 4])
+
+with col1:
+    if LOGO_FILE.exists():
+        st.image(str(LOGO_FILE), width=180)
+    else:
+        st.warning("Logo non trouvé")
+
+with col2:
+    st.title("FleetPartner Rescue 24/7")
+    st.caption("Plateforme intelligente de dépannage poids lourds")
 
 col1, col2 = st.columns([1, 4])
 
