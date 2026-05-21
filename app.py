@@ -27,13 +27,10 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-
-/* ===== Fond général ===== */
 .stApp {
     background-color: #f4f6f9;
 }
 
-/* ===== Header ===== */
 .main-header {
     background: linear-gradient(90deg, #1f2937 0%, #111827 100%);
     padding: 25px;
@@ -54,7 +51,6 @@ st.markdown("""
     font-size: 18px;
 }
 
-/* ===== KPI Cards ===== */
 .kpi-card {
     background: white;
     padding: 20px;
@@ -75,7 +71,6 @@ st.markdown("""
     font-weight: 700;
 }
 
-/* ===== Boutons ===== */
 .stButton>button {
     background-color: #f97316;
     color: white;
@@ -91,13 +86,11 @@ st.markdown("""
     transform: scale(1.02);
 }
 
-/* ===== Tabs ===== */
 .stTabs [data-baseweb="tab"] {
     font-size: 18px;
     font-weight: 600;
 }
 
-/* ===== Inputs ===== */
 .stTextInput input,
 .stNumberInput input,
 .stSelectbox div,
@@ -105,13 +98,99 @@ st.markdown("""
     border-radius: 12px !important;
 }
 
-/* ===== Alertes ===== */
 .stAlert {
     border-radius: 14px;
 }
-
 </style>
 """, unsafe_allow_html=True)
+
+
+# ============================================================
+# TWILIO
+# ============================================================
+
+def twilio_is_configured():
+    required_keys = [
+        "TWILIO_ACCOUNT_SID",
+        "TWILIO_AUTH_TOKEN",
+        "TWILIO_FROM_NUMBER",
+        "DEMO_PHONE_NUMBER"
+    ]
+
+    for key in required_keys:
+        if key not in st.secrets:
+            return False, key
+
+    return True, ""
+
+
+def get_twilio_client():
+    return Client(
+        st.secrets["TWILIO_ACCOUNT_SID"],
+        st.secrets["TWILIO_AUTH_TOKEN"]
+    )
+
+
+def send_assistance_sms(demande_id, client, chauffeur, telephone, immatriculation, latitude, longitude, type_panne, lieu, dimension, urgence, commentaire):
+    client_twilio = get_twilio_client()
+
+    body = f"""
+🚨 Nouvelle demande de dépannage
+
+ID : {demande_id}
+Client : {client}
+Chauffeur : {chauffeur}
+Téléphone : {telephone}
+Immatriculation : {immatriculation}
+
+Panne : {type_panne}
+Lieu : {lieu}
+Dimension : {dimension}
+Urgence : {urgence}
+
+GPS : {latitude}, {longitude}
+
+Commentaire :
+{commentaire}
+
+Orane Roadside Assistance
+"""
+
+    message = client_twilio.messages.create(
+        body=body,
+        from_=st.secrets["TWILIO_FROM_NUMBER"],
+        to=st.secrets["DEMO_PHONE_NUMBER"]
+    )
+
+    return message.sid
+
+
+def make_assistance_call(demande_id, client, chauffeur, immatriculation, type_panne, lieu, urgence):
+    client_twilio = get_twilio_client()
+
+    twiml = f"""
+    <Response>
+        <Say language="fr-FR" voice="alice">
+            Bonjour. Nouvelle demande de dépannage.
+            Référence {demande_id}.
+            Client {client}.
+            Chauffeur {chauffeur}.
+            Véhicule immatriculé {immatriculation}.
+            Type de panne : {type_panne}.
+            Lieu : {lieu}.
+            Niveau d'urgence : {urgence}.
+            Merci de prendre en charge l'intervention.
+        </Say>
+    </Response>
+    """
+
+    call = client_twilio.calls.create(
+        twiml=twiml,
+        from_=st.secrets["TWILIO_FROM_NUMBER"],
+        to=st.secrets["DEMO_PHONE_NUMBER"]
+    )
+
+    return call.sid
 
 
 # ============================================================
@@ -145,7 +224,6 @@ with col_title:
 
 DATA_DIR = Path("data")
 
-# Sécurité : si "data" existe par erreur comme fichier, on le supprime
 if DATA_DIR.exists() and not DATA_DIR.is_dir():
     DATA_DIR.unlink()
 
@@ -278,7 +356,6 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
         tiles="OpenStreetMap"
     )
 
-    # Camion en panne
     folium.Marker(
         location=[latitude, longitude],
         tooltip="Camion en panne",
@@ -298,7 +375,6 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
         )
     ).add_to(m)
 
-    # Cercle rouge pour rendre la position du camion très visible
     folium.CircleMarker(
         location=[latitude, longitude],
         radius=14,
@@ -309,7 +385,6 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
         popup="Zone de panne"
     ).add_to(m)
 
-    # Dépanneurs proches
     for _, d in candidats.iterrows():
         folium.Marker(
             location=[d["latitude"], d["longitude"]],
@@ -329,7 +404,6 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
             )
         ).add_to(m)
 
-        # Ligne camion → dépanneur
         folium.PolyLine(
             locations=[
                 [latitude, longitude],
@@ -501,6 +575,14 @@ tab1, tab2, tab3, tab4 = st.tabs([
 with tab1:
     st.subheader("Créer une demande de dépannage")
 
+    ok_twilio, missing_key = twilio_is_configured()
+
+    if not ok_twilio:
+        st.warning(
+            f"Twilio n'est pas encore configuré. Secret manquant : {missing_key}. "
+            "La demande sera créée, mais le SMS et l'appel ne partiront pas."
+        )
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -608,7 +690,7 @@ with tab1:
 
             creer_tentatives(demande_id, candidats)
 
-            st.success(f"Demande créée : {demande_id}. Alerte envoyée au dépanneur le plus proche.")
+            st.success(f"Demande créée : {demande_id}. Dépanneur le plus proche sollicité.")
 
             st.dataframe(
                 candidats[["nom", "reseau", "ville", "distance_km", "telephone", "stock", "score"]],
@@ -620,6 +702,43 @@ with tab1:
             pd.concat([demandes, pd.DataFrame([demande])], ignore_index=True),
             DEMANDES_FILE
         )
+
+        ok_twilio, missing_key = twilio_is_configured()
+
+        if ok_twilio:
+            try:
+                sms_sid = send_assistance_sms(
+                    demande_id=demande_id,
+                    client=client,
+                    chauffeur=chauffeur,
+                    telephone=telephone,
+                    immatriculation=immatriculation,
+                    latitude=latitude,
+                    longitude=longitude,
+                    type_panne=type_panne,
+                    lieu=lieu,
+                    dimension=dimension,
+                    urgence=urgence,
+                    commentaire=commentaire
+                )
+
+                call_sid = make_assistance_call(
+                    demande_id=demande_id,
+                    client=client,
+                    chauffeur=chauffeur,
+                    immatriculation=immatriculation,
+                    type_panne=type_panne,
+                    lieu=lieu,
+                    urgence=urgence
+                )
+
+                st.success(f"SMS Twilio envoyé. SID : {sms_sid}")
+                st.success(f"Appel Twilio déclenché. SID : {call_sid}")
+
+            except Exception as e:
+                st.error(f"Demande créée, mais erreur Twilio : {e}")
+        else:
+            st.warning(f"Demande créée, mais SMS/appel non envoyés. Secret manquant : {missing_key}")
 
 
 # ============================================================
