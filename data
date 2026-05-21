@@ -1,1 +1,16 @@
-
+id,nom,reseau,ville,latitude,longitude,telephone,email,zone_km,route,autoroute,pl,disponible,stock,score
+D001,BestDrive Roissy,BestDrive,Roissy-en-France,49.0040,2.5170,+33600000001,roissy@bestdrive-demo.fr,90,True,True,True,True,"315/80 R22.5;315/70 R22.5;385/65 R22.5",4.7
+D002,BestDrive Compiègne,BestDrive,Compiègne,49.4179,2.8261,+33600000002,compiegne@bestdrive-demo.fr,100,True,True,True,True,"315/80 R22.5;295/80 R22.5",4.8
+D003,BestDrive Lille,BestDrive,Lille,50.6292,3.0573,+33600000003,lille@bestdrive-demo.fr,120,True,True,True,True,"315/70 R22.5;385/65 R22.5",4.5
+D004,BestDrive Amiens,BestDrive,Amiens,49.8941,2.2958,+33600000004,amiens@bestdrive-demo.fr,100,True,True,True,True,"315/80 R22.5;385/65 R22.5",4.3
+D005,BestDrive Rouen,BestDrive,Rouen,49.4431,1.0993,+33600000005,rouen@bestdrive-demo.fr,100,True,True,True,True,"315/80 R22.5;315/70 R22.5",4.2
+D006,BestDrive Paris Nord,BestDrive,Saint-Denis,48.9362,2.3574,+33600000006,parisnord@bestdrive-demo.fr,80,True,True,True,False,"315/70 R22.5",4.1
+D007,BestDrive Reims,BestDrive,Reims,49.2583,4.0317,+33600000007,reims@bestdrive-demo.fr,110,True,True,True,True,"315/80 R22.5;385/65 R22.5",4.6
+D008,BestDrive Metz,BestDrive,Metz,49.1193,6.1757,+33600000008,metz@bestdrive-demo.fr,120,True,True,True,True,"315/80 R22.5;315/60 R22.5",4.4
+D009,BestDrive Lyon,BestDrive,Lyon,45.7640,4.8357,+33600000009,lyon@bestdrive-demo.fr,150,True,True,True,True,"315/80 R22.5;385/65 R22.5",4.7
+D010,BestDrive Marseille,BestDrive,Marseille,43.2965,5.3698,+33600000010,marseille@bestdrive-demo.fr,150,True,True,True,True,"315/80 R22.5;295/80 R22.5",4.2
+D011,BestDrive Toulouse,BestDrive,Toulouse,43.6047,1.4442,+33600000011,toulouse@bestdrive-demo.fr,140,True,True,True,True,"315/70 R22.5;385/65 R22.5",4.5
+D012,BestDrive Bordeaux,BestDrive,Bordeaux,44.8378,-0.5792,+33600000012,bordeaux@bestdrive-demo.fr,140,True,True,True,True,"315/80 R22.5;385/55 R22.5",4.6
+D013,BestDrive Nantes,BestDrive,Nantes,47.2184,-1.5536,+33600000013,nantes@bestdrive-demo.fr,130,True,True,True,True,"315/80 R22.5;315/70 R22.5",4.4
+D014,BestDrive Strasbourg,BestDrive,Strasbourg,48.5734,7.7521,+33600000014,strasbourg@bestdrive-demo.fr,120,True,True,True,True,"315/80 R22.5;385/65 R22.5",4.5
+D015,BestDrive Nice,BestDrive,Nice,43.7102,7.2620,+33600000015,nice@bestdrive-demo.fr,120,True,True,True,True,"315/70 R22.5;295/80 R22.5",4.1
