@@ -16,7 +16,11 @@ st.set_page_config(
     page_icon="🚛",
     layout="wide"
 )
-)
+
+# ============================================================
+# STYLE CSS
+# ============================================================
+
 st.markdown("""
 <style>
 
@@ -120,13 +124,29 @@ with col_logo:
 with col_title:
     st.markdown("""
     <div class="main-header">
-<div class="main-title">Orane Roadside Assistance</div>
-<div class="main-subtitle">
-    Assistance et dépannage poids lourds • Route • Autoroute • 24/7
-</div>
+        <div class="main-title">Orane Roadside Assistance</div>
+        <div class="main-subtitle">
+            Assistance et dépannage poids lourds • Route • Autoroute • 24/7
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
+
+# ============================================================
+# FICHIERS DATA
+# ============================================================
+
+DATA_DIR = Path("data")
+
+# Sécurité : si "data" existe par erreur comme fichier, on le supprime
+if DATA_DIR.exists() and not DATA_DIR.is_dir():
+    DATA_DIR.unlink()
+
+DATA_DIR.mkdir(exist_ok=True)
+
+DEPANNEURS_FILE = DATA_DIR / "depanneurs_demo.csv"
+DEMANDES_FILE = DATA_DIR / "demandes_demo.csv"
+TENTATIVES_FILE = DATA_DIR / "tentatives_demo.csv"
 
 # ============================================================
 # FICHIERS DATA
