@@ -120,10 +120,10 @@ with col_logo:
 with col_title:
     st.markdown("""
     <div class="main-header">
-        <div class="main-title">FleetPartner Rescue 24/7</div>
-        <div class="main-subtitle">
-            Dispatch intelligent de dépannage poids lourds • Route • Autoroute • 24/7
-        </div>
+<div class="main-title">Orane Roadside Assistance</div>
+<div class="main-subtitle">
+    Assistance et dépannage poids lourds • Route • Autoroute • 24/7
+</div>
     </div>
     """, unsafe_allow_html=True)
 
