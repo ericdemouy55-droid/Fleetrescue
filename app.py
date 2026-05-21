@@ -6,7 +6,7 @@ from pathlib import Path
 import folium
 import pandas as pd
 import streamlit as st
-from streamlit_folium import st_folium
+import streamlit.components.v1 as components
 
 
 # ============================================================
