@@ -16,7 +16,93 @@ st.set_page_config(
     page_icon="🛞",
     layout="wide"
 )
+st.markdown("""
+<style>
 
+/* ===== Fond général ===== */
+.stApp {
+    background-color: #f4f6f9;
+}
+
+/* ===== Header ===== */
+.main-header {
+    background: linear-gradient(90deg, #1f2937 0%, #111827 100%);
+    padding: 25px;
+    border-radius: 18px;
+    margin-bottom: 25px;
+    box-shadow: 0px 4px 18px rgba(0,0,0,0.15);
+}
+
+.main-title {
+    color: white;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.main-subtitle {
+    color: #d1d5db;
+    font-size: 18px;
+}
+
+/* ===== KPI Cards ===== */
+.kpi-card {
+    background: white;
+    padding: 20px;
+    border-radius: 18px;
+    box-shadow: 0px 2px 12px rgba(0,0,0,0.08);
+    border-left: 6px solid #f97316;
+    margin-bottom: 15px;
+}
+
+.kpi-title {
+    color: #6b7280;
+    font-size: 15px;
+}
+
+.kpi-value {
+    color: #111827;
+    font-size: 34px;
+    font-weight: 700;
+}
+
+/* ===== Boutons ===== */
+.stButton>button {
+    background-color: #f97316;
+    color: white;
+    border-radius: 12px;
+    border: none;
+    padding: 12px 20px;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+.stButton>button:hover {
+    background-color: #ea580c;
+    transform: scale(1.02);
+}
+
+/* ===== Tabs ===== */
+.stTabs [data-baseweb="tab"] {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* ===== Inputs ===== */
+.stTextInput input,
+.stNumberInput input,
+.stSelectbox div,
+.stTextArea textarea {
+    border-radius: 12px !important;
+}
+
+/* ===== Alertes ===== */
+.stAlert {
+    border-radius: 14px;
+}
+
+</style>
+""", unsafe_allow_html=True)
 
 # ============================================================
 # HEADER AVEC LOGO
