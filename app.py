@@ -110,17 +110,21 @@ st.markdown("""
 
 LOGO_FILE = Path("assets") / "fleetpartner_logo.png"
 
-col_logo, col_title = st.columns([1, 4])
+col_logo, col_title = st.columns([1, 5])
 
 with col_logo:
     if LOGO_FILE.exists():
-        st.image(str(LOGO_FILE), width=220)
-    else:
-        st.warning("Logo non trouvé")
+        st.image(str(LOGO_FILE), width=180)
 
 with col_title:
-    st.title("FleetPartner Rescue 24/7")
-    st.caption("Plateforme intelligente de dépannage poids lourds")
+    st.markdown("""
+    <div class="main-header">
+        <div class="main-title">FleetPartner Rescue 24/7</div>
+        <div class="main-subtitle">
+            Dispatch intelligent de dépannage poids lourds • Route • Autoroute • 24/7
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
