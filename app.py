@@ -621,70 +621,55 @@ with tab1:
             type=["jpg", "jpeg", "png"],
             accept_multiple_files=True
         )
-        if photos and len(photos) >= 2:
 
-    st.markdown("### 🛞 Analyse IA pneumatique")
-
-    photo_flanc = photos[0]
-    photo_avarie = photos[1]
-
-    if st.button("🔍 Analyser les photos"):
-
-        with st.spinner("Analyse IA en cours..."):
-            resultat = analyser_pneu(photo_flanc, photo_avarie)
-
-        flanc = resultat.get("photo_flanc", {})
-        avarie = resultat.get("photo_avarie", {})
-
-        st.success("Analyse terminée")
-
-        st.markdown("### Diagnostic IA")
-
-        st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
-        st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
-        st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
-        st.write(f"**Réparabilité :** {avarie.get('réparabilité', 'non déterminé')}")
-        st.write(f"**Action recommandée :** {avarie.get('action_recommandee', '')}")
-if photos and len(photos) >= 2:
-
-    st.markdown("### 🛞 Analyse IA pneumatique")
-
-    photo_flanc = photos[0]
-    photo_avarie = photos[1]
-
-    c1, c2 = st.columns(2)
-
-    with c1:
-        st.image(photo_flanc, caption="Photo 1 - Flanc du pneu", use_container_width=True)
-
-    with c2:
-        st.image(photo_avarie, caption="Photo 2 - Avarie du pneu", use_container_width=True)
-
-    if st.button("🔍 Analyser les photos avec IA"):
-
-        with st.spinner("Analyse IA en cours..."):
-            resultat = analyser_pneu(photo_flanc, photo_avarie)
-
-        flanc = resultat.get("photo_flanc", {})
-        avarie = resultat.get("photo_avarie", {})
-
-        st.success("Analyse terminée")
-
-        st.subheader("Synthèse IA")
-
-        st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
-        st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
-        st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
-        st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
-
-        st.write(f"**Avarie :** {avarie.get('description', 'non visible')}")
-        st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
-        st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
-        st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
-        st.write(f"**Action recommandée :** {avarie.get('action_recommandee', 'à confirmer par opérateur')}")
         if photos and len(photos) > 2:
             st.error("Merci de limiter l'ajout à 2 photos maximum.")
             photos = photos[:2]
+
+        if photos and len(photos) >= 2:
+            st.markdown("### 🛞 Analyse IA pneumatique")
+
+            photo_flanc = photos[0]
+            photo_avarie = photos[1]
+
+            c1, c2 = st.columns(2)
+
+            with c1:
+                st.image(
+                    photo_flanc,
+                    caption="Photo 1 - Flanc du pneu",
+                    use_container_width=True
+                )
+
+            with c2:
+                st.image(
+                    photo_avarie,
+                    caption="Photo 2 - Avarie du pneu",
+                    use_container_width=True
+                )
+
+            if st.button("🔍 Analyser les photos avec IA"):
+                with st.spinner("Analyse IA en cours..."):
+                    resultat = analyser_pneu(photo_flanc, photo_avarie)
+
+                flanc = resultat.get("photo_flanc", {})
+                avarie = resultat.get("photo_avarie", {})
+
+                st.success("Analyse terminée")
+
+                st.subheader("Synthèse IA")
+                st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
+                st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
+                st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
+                st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
+                st.write(f"**Avarie :** {avarie.get('description', 'non visible')}")
+                st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
+                st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
+                st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
+                st.write(
+                    f"**Action recommandée :** "
+                    f"{avarie.get('action_recommandee', 'à confirmer par opérateur')}"
+                )
 
     st.divider()
 
