@@ -621,6 +621,30 @@ with tab1:
             type=["jpg", "jpeg", "png"],
             accept_multiple_files=True
         )
+        if photos and len(photos) >= 2:
+
+    st.markdown("### 🛞 Analyse IA pneumatique")
+
+    photo_flanc = photos[0]
+    photo_avarie = photos[1]
+
+    if st.button("🔍 Analyser les photos"):
+
+        with st.spinner("Analyse IA en cours..."):
+            resultat = analyser_pneu(photo_flanc, photo_avarie)
+
+        flanc = resultat.get("photo_flanc", {})
+        avarie = resultat.get("photo_avarie", {})
+
+        st.success("Analyse terminée")
+
+        st.markdown("### Diagnostic IA")
+
+        st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
+        st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
+        st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
+        st.write(f"**Réparabilité :** {avarie.get('réparabilité', 'non déterminé')}")
+        st.write(f"**Action recommandée :** {avarie.get('action_recommandee', '')}")
 if photos and len(photos) >= 2:
 
     st.markdown("### 🛞 Analyse IA pneumatique")
