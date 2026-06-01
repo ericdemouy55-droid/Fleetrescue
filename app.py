@@ -652,7 +652,11 @@ with tab1:
                     resultat = analyser_pneu(photo_flanc, photo_avarie)
 
                 flanc = resultat.get("photo_flanc", {})
-                avarie = resultat.get("photo_avarie", {})
+                avarie = (
+    resultat.get("photo_avarie", {})
+    or resultat.get("photo_incident", {})
+    or resultat.get("avarie", {})
+)
 
                 st.success("Analyse terminée")
 with st.expander("Voir le résultat technique IA"):
