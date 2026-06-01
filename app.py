@@ -647,8 +647,7 @@ with tab1:
                     use_column_width=True
                 )
 
-                        if st.button("🔍 Analyser les photos avec IA"):
-
+            if st.button("🔍 Analyser les photos avec IA"):
                 with st.spinner("Analyse IA en cours..."):
                     resultat = analyser_pneu(photo_flanc, photo_avarie)
 
@@ -660,21 +659,18 @@ with tab1:
                 )
 
                 st.success("Analyse terminée")
-
-                with st.expander("Voir le résultat technique IA"):
-                    st.json(resultat)
-
                 st.subheader("Synthèse IA")
 
                 st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
                 st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
                 st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
-                st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
+                st.write(f"**DOT :** {flanc.get('DOT', flanc.get('dot', 'non visible'))}")
 
                 st.write(f"**Avarie :** {avarie.get('description', avarie.get('type', 'non visible'))}")
                 st.write(f"**Localisation :** {avarie.get('localisation', avarie.get('zone', 'non visible'))}")
                 st.write(f"**Gravité :** {avarie.get('gravité', avarie.get('gravite', 'non visible'))}")
                 st.write(f"**Réparation possible :** {avarie.get('réparabilité', avarie.get('reparabilite', 'non déterminé'))}")
+
     st.divider()
 
     if st.button(
