@@ -611,12 +611,12 @@ with tab1:
             ]
         )
 
-        commentaire = st.text_area(
+                commentaire = st.text_area(
             "Commentaire",
             "Véhicule immobilisé. Demande urgente."
         )
 
-            photo_flanc = st.file_uploader(
+        photo_flanc = st.file_uploader(
             "Photo flanc pneu",
             type=["jpg", "jpeg", "png"],
             key="photo_flanc_pneu"
@@ -669,7 +669,7 @@ with tab1:
                 st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
                 st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
                 st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
-    if st.button(
+                
             st.divider()
         "🚨 DEMANDER UN DÉPANNAGE",
         type="primary",
