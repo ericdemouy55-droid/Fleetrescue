@@ -616,39 +616,40 @@ with tab1:
             "Véhicule immobilisé. Demande urgente."
         )
 
-        photo_flanc = st.file_uploader(
-    "Photo flanc pneu",
-    type=["jpg", "jpeg", "png"],
-    key="photo_flanc_pneu"
-)
+            photo_flanc = st.file_uploader(
+            "Photo flanc pneu",
+            type=["jpg", "jpeg", "png"],
+            key="photo_flanc_pneu"
+        )
 
-photo_avarie = st.file_uploader(
-    "Photo incident",
-    type=["jpg", "jpeg", "png"],
-    key="photo_incident"
-)
+        photo_avarie = st.file_uploader(
+            "Photo incident",
+            type=["jpg", "jpeg", "png"],
+            key="photo_incident"
+        )
 
         if photo_flanc and photo_avarie:
-            st.error("Merci de limiter l'ajout à 2 photos maximum.")
-            photos = photos[:2]
 
-        if photos and len(photos) >= 2:
             st.markdown("### 🛞 Analyse IA pneumatique")
-
-            photo_flanc = photos[0]
-            photo_avarie = photos[1]
 
             c1, c2 = st.columns(2)
 
             with c1:
-                st.image(photo_flanc, caption="Photo 1 - Flanc du pneu", use_column_width=True)
-                
+                st.image(
+                    photo_flanc,
+                    caption="Photo flanc pneu",
+                    use_column_width=True
+                )
 
             with c2:
-                st.image(photo_avarie, caption="Photo 2 - Avarie du pneu", use_column_width=True)
-                
+                st.image(
+                    photo_avarie,
+                    caption="Photo incident",
+                    use_column_width=True
+                )
 
             if st.button("🔍 Analyser les photos avec IA"):
+
                 with st.spinner("Analyse IA en cours..."):
                     resultat = analyser_pneu(photo_flanc, photo_avarie)
 
@@ -658,18 +659,16 @@ photo_avarie = st.file_uploader(
                 st.success("Analyse terminée")
 
                 st.subheader("Synthèse IA")
+
                 st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
                 st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
                 st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
                 st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
+
                 st.write(f"**Avarie :** {avarie.get('description', 'non visible')}")
                 st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
                 st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
                 st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
-                
-
-    st.divider()
-
     if st.button(
         "🚨 DEMANDER UN DÉPANNAGE",
         type="primary",
