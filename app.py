@@ -891,8 +891,7 @@ if st.button("🔍 Analyser avec IA"):
 
         st.success("Analyse terminée")
 
-        st.subheader("Résultat IA")
-        st.json(resultat)
+
 
         flanc = resultat.get("photo_flanc", {})
         avarie = resultat.get("photo_avarie", {})
