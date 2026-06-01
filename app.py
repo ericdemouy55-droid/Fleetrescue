@@ -3,6 +3,7 @@ import math
 import uuid
 from datetime import datetime
 from pathlib import Path
+from ai_tire_analysis import analyser_pneu
 
 import folium
 import pandas as pd
