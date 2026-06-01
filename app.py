@@ -892,9 +892,9 @@ if st.button("🔍 Analyser avec IA"):
         st.subheader("Résultat IA")
         st.json(resultat)
 
-        flanc = resultat.get("flanc", {})
-        avarie = resultat.get("avarie", {})
-        decision = resultat.get("decision", {})
+      flanc = resultat.get("photo_flanc", {})
+avarie = resultat.get("photo_avarie", {})
+decision = resultat.get("decision", {})
 
         st.subheader("Synthèse superviseur")
         st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
