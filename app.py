@@ -611,7 +611,7 @@ with tab1:
             ]
         )
 
-commentaire = st.text_area(
+        commentaire = st.text_area(
             "Commentaire",
             "Véhicule immobilisé. Demande urgente."
         )
@@ -629,7 +629,6 @@ commentaire = st.text_area(
         )
 
         if photo_flanc and photo_avarie:
-
             st.markdown("### 🛞 Analyse IA pneumatique")
 
             c1, c2 = st.columns(2)
@@ -649,7 +648,6 @@ commentaire = st.text_area(
                 )
 
             if st.button("🔍 Analyser les photos avec IA"):
-
                 with st.spinner("Analyse IA en cours..."):
                     resultat = analyser_pneu(photo_flanc, photo_avarie)
 
@@ -669,8 +667,10 @@ commentaire = st.text_area(
                 st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
                 st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
                 st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
-                
-            st.divider()
+
+    st.divider()
+
+    if st.button(
         "🚨 DEMANDER UN DÉPANNAGE",
         type="primary",
         use_container_width=True
@@ -699,7 +699,7 @@ commentaire = st.text_area(
             "mode_paiement": mode_paiement,
             "commentaire": commentaire,
             "photo_1": photo_flanc.name if photo_flanc else "",
-"photo_2": photo_avarie.name if photo_avarie else "",
+            "photo_2": photo_avarie.name if photo_avarie else "",
             "date_cloture": "",
         }
 
