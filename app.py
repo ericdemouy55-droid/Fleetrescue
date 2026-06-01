@@ -647,20 +647,23 @@ with tab1:
                     use_column_width=True
                 )
 
-            if st.button("🔍 Analyser les photos avec IA"):
+                        if st.button("🔍 Analyser les photos avec IA"):
+
                 with st.spinner("Analyse IA en cours..."):
                     resultat = analyser_pneu(photo_flanc, photo_avarie)
 
                 flanc = resultat.get("photo_flanc", {})
                 avarie = (
-    resultat.get("photo_avarie", {})
-    or resultat.get("photo_incident", {})
-    or resultat.get("avarie", {})
-)
+                    resultat.get("photo_avarie", {})
+                    or resultat.get("photo_incident", {})
+                    or resultat.get("avarie", {})
+                )
 
                 st.success("Analyse terminée")
-with st.expander("Voir le résultat technique IA"):
-    st.json(resultat)
+
+                with st.expander("Voir le résultat technique IA"):
+                    st.json(resultat)
+
                 st.subheader("Synthèse IA")
 
                 st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
@@ -668,11 +671,10 @@ with st.expander("Voir le résultat technique IA"):
                 st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
                 st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
 
-st.write(f"**Avarie :** {avarie.get('description', avarie.get('type', 'non visible'))}")
-st.write(f"**Localisation :** {avarie.get('localisation', avarie.get('zone', 'non visible'))}")
-st.write(f"**Gravité :** {avarie.get('gravité', avarie.get('gravite', 'non visible'))}")
-st.write(f"**Réparation possible :** {avarie.get('réparabilité', avarie.get('reparabilite', 'non déterminé'))}")
-
+                st.write(f"**Avarie :** {avarie.get('description', avarie.get('type', 'non visible'))}")
+                st.write(f"**Localisation :** {avarie.get('localisation', avarie.get('zone', 'non visible'))}")
+                st.write(f"**Gravité :** {avarie.get('gravité', avarie.get('gravite', 'non visible'))}")
+                st.write(f"**Réparation possible :** {avarie.get('réparabilité', avarie.get('reparabilite', 'non déterminé'))}")
     st.divider()
 
     if st.button(
