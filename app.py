@@ -668,10 +668,10 @@ with st.expander("Voir le résultat technique IA"):
                 st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
                 st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
 
-                st.write(f"**Avarie :** {avarie.get('description', 'non visible')}")
-                st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
-                st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
-                st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
+st.write(f"**Avarie :** {avarie.get('description', avarie.get('type', 'non visible'))}")
+st.write(f"**Localisation :** {avarie.get('localisation', avarie.get('zone', 'non visible'))}")
+st.write(f"**Gravité :** {avarie.get('gravité', avarie.get('gravite', 'non visible'))}")
+st.write(f"**Réparation possible :** {avarie.get('réparabilité', avarie.get('reparabilite', 'non déterminé'))}")
 
     st.divider()
 
