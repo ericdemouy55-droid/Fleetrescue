@@ -883,19 +883,30 @@ if st.button("🔍 Analyser avec IA"):
 
     if not photo_flanc or not photo_avarie:
         st.error("Merci d'ajouter les deux photos avant de lancer l'analyse.")
+
     else:
+
         with st.spinner("Analyse IA en cours..."):
             resultat = analyser_pneu(photo_flanc, photo_avarie)
 
         st.success("Analyse terminée")
 
-      st.subheader("Synthèse superviseur")
-st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
-st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
-st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
-st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
-st.write(f"**Avarie :** {avarie.get('description', 'non visible')}")
-st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
-st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
-st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
-st.write(f"**Action recommandée :** {avarie.get('action_recommandee', 'à confirmer par opérateur')}")
+        st.subheader("Résultat IA")
+        st.json(resultat)
+
+        flanc = resultat.get("photo_flanc", {})
+        avarie = resultat.get("photo_avarie", {})
+        decision = resultat.get("decision", {})
+
+        st.subheader("Synthèse superviseur")
+
+        st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
+        st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
+        st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
+        st.write(f"**DOT :** {flanc.get('DOT', 'non visible')}")
+
+        st.write(f"**Avarie :** {avarie.get('description', 'non visible')}")
+        st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
+        st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
+        st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
+        st.write(f"**Action recommandée :** {avarie.get('action_recommandee', 'à confirmer par opérateur')}")
