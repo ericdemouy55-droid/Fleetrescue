@@ -660,10 +660,7 @@ with tab1:
                 st.write(f"**Localisation :** {avarie.get('localisation', 'non visible')}")
                 st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
                 st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
-                st.write(
-                    f"**Action recommandée :** "
-                    f"{avarie.get('action_recommandee', 'à confirmer par opérateur')}"
-                )
+                
 
     st.divider()
 
