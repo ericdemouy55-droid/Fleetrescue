@@ -655,7 +655,8 @@ with tab1:
                 avarie = resultat.get("photo_avarie", {})
 
                 st.success("Analyse terminée")
-
+with st.expander("Voir le résultat technique IA"):
+    st.json(resultat)
                 st.subheader("Synthèse IA")
 
                 st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
