@@ -636,11 +636,11 @@ with tab1:
 
             with c1:
                 st.image(photo_flanc, caption="Photo 1 - Flanc du pneu", use_column_width=True)
-                )
+                
 
             with c2:
                 st.image(photo_avarie, caption="Photo 2 - Avarie du pneu", use_column_width=True)
-                )
+                
 
             if st.button("🔍 Analyser les photos avec IA"):
                 with st.spinner("Analyse IA en cours..."):
