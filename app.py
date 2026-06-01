@@ -616,13 +616,19 @@ with tab1:
             "Véhicule immobilisé. Demande urgente."
         )
 
-        photos = st.file_uploader(
-            "Ajouter jusqu'à 2 photos",
-            type=["jpg", "jpeg", "png"],
-            accept_multiple_files=True
-        )
+        photo_flanc = st.file_uploader(
+    "Photo flanc pneu",
+    type=["jpg", "jpeg", "png"],
+    key="photo_flanc_pneu"
+)
 
-        if photos and len(photos) > 2:
+photo_avarie = st.file_uploader(
+    "Photo incident",
+    type=["jpg", "jpeg", "png"],
+    key="photo_incident"
+)
+
+        if photo_flanc and photo_avarie:
             st.error("Merci de limiter l'ajout à 2 photos maximum.")
             photos = photos[:2]
 
@@ -692,8 +698,8 @@ with tab1:
             "distance_km": "",
             "mode_paiement": mode_paiement,
             "commentaire": commentaire,
-            "photo_1": photos[0].name if photos and len(photos) > 0 else "",
-            "photo_2": photos[1].name if photos and len(photos) > 1 else "",
+            "photo_1": photo_flanc.name if photo_flanc else "",
+"photo_2": photo_avarie.name if photo_avarie else "",
             "date_cloture": "",
         }
 
