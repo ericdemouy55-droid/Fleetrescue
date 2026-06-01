@@ -879,5 +879,29 @@ with tab5:
     if photo_avarie:
         st.image(photo_avarie)
 
-    if st.button("🔍 Analyser avec IA"):
-        st.success("Module IA prêt pour la prochaine étape")
+if st.button("🔍 Analyser avec IA"):
+
+    if not photo_flanc or not photo_avarie:
+        st.error("Merci d'ajouter les deux photos avant de lancer l'analyse.")
+    else:
+        with st.spinner("Analyse IA en cours..."):
+            resultat = analyser_pneu(photo_flanc, photo_avarie)
+
+        st.success("Analyse terminée")
+
+        st.subheader("Résultat IA")
+        st.json(resultat)
+
+        flanc = resultat.get("flanc", {})
+        avarie = resultat.get("avarie", {})
+        decision = resultat.get("decision", {})
+
+        st.subheader("Synthèse superviseur")
+        st.write(f"**Marque :** {flanc.get('marque', 'non visible')}")
+        st.write(f"**Dimension :** {flanc.get('dimension', 'non visible')}")
+        st.write(f"**Profil :** {flanc.get('profil', 'non visible')}")
+        st.write(f"**DOT :** {flanc.get('dot', 'non visible')}")
+        st.write(f"**Avarie :** {avarie.get('type', 'non visible')}")
+        st.write(f"**Gravité :** {avarie.get('gravite', 'non visible')}")
+        st.write(f"**Réparation possible :** {avarie.get('reparation_possible', 'non déterminé')}")
+        st.write(f"**Action recommandée :** {decision.get('action', 'à confirmer par opérateur')}")
