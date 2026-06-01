@@ -843,3 +843,40 @@ with tab4:
             file_name="demandes_depannage.csv",
             mime="text/csv",
         )
+# ============================================================
+# ONGLET 5 — ANALYSE IA PNEU
+# ============================================================
+
+with tab5:
+
+    st.subheader("Analyse IA pneumatique")
+
+    st.info(
+        "Photo 1 : flanc du pneu\n\n"
+        "Photo 2 : avarie du pneu"
+    )
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        photo_flanc = st.file_uploader(
+            "Photo du flanc",
+            type=["jpg", "jpeg", "png"],
+            key="flanc"
+        )
+
+    with col2:
+        photo_avarie = st.file_uploader(
+            "Photo de l'avarie",
+            type=["jpg", "jpeg", "png"],
+            key="avarie"
+        )
+
+    if photo_flanc:
+        st.image(photo_flanc)
+
+    if photo_avarie:
+        st.image(photo_avarie)
+
+    if st.button("🔍 Analyser avec IA"):
+        st.success("Module IA prêt pour la prochaine étape")
