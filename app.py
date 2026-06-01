@@ -550,11 +550,12 @@ with k4:
     </div>
     """, unsafe_allow_html=True)
 
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🚨 Demande chauffeur",
     "🧭 Superviseur",
     "🛠️ Dépanneurs",
-    "📊 Reporting"
+    "📊 Reporting",
+    "🛞 Analyse IA"
 ])
 
 
