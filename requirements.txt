@@ -3,3 +3,4 @@ pandas==2.1.4
 pillow
 folium
 twilio==9.8.0
+openai
