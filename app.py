@@ -670,6 +670,7 @@ with tab1:
                 st.write(f"**Gravité :** {avarie.get('gravité', 'non visible')}")
                 st.write(f"**Réparation possible :** {avarie.get('réparabilité', 'non déterminé')}")
     if st.button(
+            st.divider()
         "🚨 DEMANDER UN DÉPANNAGE",
         type="primary",
         use_container_width=True
