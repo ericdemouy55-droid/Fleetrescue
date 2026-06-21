@@ -415,6 +415,147 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# ============================================================
+# STYLE VISUEL V2 — LOOK PRODUIT / SAAS SOMBRE
+# ============================================================
+
+st.markdown("""
+<style>
+/* --- Fond général premium --- */
+.stApp {
+    background:
+        radial-gradient(circle at 18% 12%, rgba(37,99,235,0.25), transparent 30%),
+        radial-gradient(circle at 85% 5%, rgba(6,182,212,0.16), transparent 32%),
+        linear-gradient(135deg, #050b16 0%, #07111f 44%, #0b1220 100%) !important;
+    color: #e5eefb;
+}
+
+.block-container {
+    padding-top: 1.1rem !important;
+    max-width: 1420px !important;
+}
+
+/* Cache le chrome Streamlit qui casse l'effet appli */
+[data-testid="stHeader"] { background: transparent !important; }
+#MainMenu, footer { visibility: hidden; }
+
+/* Textes Streamlit lisibles sur fond sombre */
+h1, h2, h3, h4, h5, h6, .stMarkdown, label, p { color: #e5eefb !important; }
+.stCaptionContainer, .stCaptionContainer p { color: #94a3b8 !important; }
+
+/* Header existant transformé en vrai hero */
+.main-header {
+    background:
+        linear-gradient(135deg, rgba(15,23,42,0.92), rgba(7,17,31,0.82)),
+        radial-gradient(circle at 20% 20%, rgba(37,99,235,0.36), transparent 42%) !important;
+    border: 1px solid rgba(148,163,184,0.18) !important;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+    backdrop-filter: blur(18px);
+}
+.main-title {
+    font-size: 46px !important;
+    letter-spacing: -0.055em !important;
+}
+.main-subtitle { color: #9fb0c8 !important; }
+
+/* KPI du haut dans le style de la maquette */
+.kpi-card {
+    background: linear-gradient(180deg, rgba(15,23,42,0.88), rgba(15,23,42,0.58)) !important;
+    border: 1px solid rgba(148,163,184,0.16) !important;
+    border-left: 1px solid rgba(56,189,248,0.45) !important;
+    border-radius: 24px !important;
+    box-shadow: 0 18px 55px rgba(0,0,0,0.28) !important;
+    position: relative;
+    overflow: hidden;
+}
+.kpi-card:before {
+    content: ""; position: absolute; inset: -60px -40px auto auto; width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(56,189,248,.22), transparent 68%);
+}
+.kpi-title { color: #8aa0bd !important; text-transform: uppercase; letter-spacing: .08em; font-size: 12px !important; font-weight: 800 !important; }
+.kpi-value { color: #f8fbff !important; font-weight: 950 !important; letter-spacing: -.05em; }
+
+/* Tabs façon app */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 10px;
+    background: rgba(15,23,42,0.62);
+    padding: 9px;
+    border-radius: 22px;
+    border: 1px solid rgba(148,163,184,0.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.stTabs [data-baseweb="tab"] {
+    height: 48px;
+    border-radius: 16px !important;
+    color: #9fb0c8 !important;
+    padding: 0 16px !important;
+}
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(135deg, #2563eb, #06b6d4) !important;
+    color: white !important;
+    box-shadow: 0 12px 30px rgba(37,99,235,0.28);
+}
+
+/* Inputs plus premium */
+.stTextInput input, .stNumberInput input, .stTextArea textarea {
+    background: rgba(15,23,42,0.78) !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(148,163,184,0.2) !important;
+    border-radius: 16px !important;
+}
+.stSelectbox div[data-baseweb="select"] > div, .stRadio > div {
+    background: rgba(15,23,42,0.58) !important;
+    border-radius: 16px !important;
+}
+.stFileUploader section {
+    background: rgba(15,23,42,0.58) !important;
+    border: 1px dashed rgba(56,189,248,0.34) !important;
+    border-radius: 20px !important;
+}
+.stAlert {
+    background: rgba(15,23,42,0.72) !important;
+    border: 1px solid rgba(148,163,184,0.18) !important;
+    color: #e5eefb !important;
+}
+
+/* Cards V1 transformées en glassmorphism */
+.fr-hero, .fr-card, .fr-card-dark, .fr-kpi, .fr-responder-card, .mobile-card {
+    background: linear-gradient(180deg, rgba(15,23,42,0.88), rgba(15,23,42,0.60)) !important;
+    color: #e5eefb !important;
+    border: 1px solid rgba(148,163,184,0.16) !important;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.30) !important;
+    backdrop-filter: blur(16px);
+}
+.fr-section-title, .fr-info-value, .fr-mini-value, .fr-responder-name, .fr-strong, .mobile-card-title { color: #f8fafc !important; }
+.fr-muted, .fr-info-label, .fr-mini-label, .fr-kpi-label, .fr-kpi-foot, .fr-white-muted { color: #94a3b8 !important; }
+.fr-mini { background: rgba(2,6,23,.45) !important; border-color: rgba(148,163,184,.13) !important; }
+.fr-kpi-value { color: #f8fafc !important; }
+.fr-info-row { border-bottom: 1px solid rgba(148,163,184,.12) !important; }
+
+/* Boutons */
+.stButton>button, .stDownloadButton>button, .stLinkButton>a {
+    background: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%) !important;
+    color: white !important;
+    border: 0 !important;
+    border-radius: 16px !important;
+    font-weight: 900 !important;
+    min-height: 48px;
+    box-shadow: 0 14px 34px rgba(37,99,235,0.28) !important;
+}
+.stButton>button:hover, .stDownloadButton>button:hover, .stLinkButton>a:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+}
+
+/* Dataframe : on le laisse, mais moins agressif */
+[data-testid="stDataFrame"] {
+    border-radius: 20px !important;
+    overflow: hidden;
+    border: 1px solid rgba(148,163,184,.14) !important;
+}
+</style>
+""", unsafe_allow_html=True)
+
 
 # ============================================================
 # TWILIO
@@ -1626,6 +1767,261 @@ def afficher_carte_superviseur(demande, current):
     components.html(m._repr_html_(), height=520)
 
 
+
+# ============================================================
+# VUE PRODUIT HAUTE FIDÉLITÉ — MOCKUP SAAS V2
+# ============================================================
+
+def latest_or_demo(demandes):
+    if demandes is not None and not demandes.empty:
+        return demandes.sort_values("date_creation", ascending=False).iloc[0].to_dict()
+    return {
+        "id": "REQ-DEMO42",
+        "client": "Transport Demo",
+        "chauffeur": "Jean Martin",
+        "telephone_chauffeur": "+33 6 12 34 56 78",
+        "immatriculation": "AB-123-CD",
+        "type_panne": "Éclatement",
+        "dimension": "315/80 R22.5",
+        "urgence": "Urgent",
+        "statut": "Mission proposée au dépanneur",
+        "depanneur_nom": "BestDrive Compiègne",
+        "distance_km": "18.4",
+        "eta_minutes": "18",
+        "stock_disponible": True,
+        "stock_quantite": 6,
+        "stock_marque": "Continental",
+        "stock_profil": "Conti Hybrid HD3",
+        "score_ia": "148.2",
+        "decision_ia": "Recommandé : stock disponible",
+    }
+
+
+def render_product_showcase(demandes, tentatives):
+    d = latest_or_demo(demandes)
+    intervention_id = ui_safe(d.get("id", "REQ-DEMO42"))
+    client = ui_safe(d.get("client", "Transport Demo"))
+    immat = ui_safe(d.get("immatriculation", "AB-123-CD"))
+    panne = ui_safe(d.get("type_panne", "Éclatement"))
+    dimension = ui_safe(d.get("dimension", "315/80 R22.5"))
+    urgence = ui_safe(d.get("urgence", "Urgent"))
+    statut = ui_safe(d.get("statut", "Mission proposée au dépanneur"))
+    depanneur = ui_safe(d.get("depanneur_nom", d.get("depanneur_assigne", "BestDrive Compiègne")))
+    distance = ui_safe(d.get("distance_km", "18.4"))
+    eta = ui_safe(d.get("eta_minutes", "18"))
+    score = ui_safe(d.get("score_ia", "148.2"))
+    stock_qty = ui_safe(d.get("stock_quantite", "6"))
+    stock_brand = ui_safe(d.get("stock_marque", "Continental"))
+    stock_profile = ui_safe(d.get("stock_profil", "Conti Hybrid HD3"))
+    decision = ui_safe(d.get("decision_ia", "Recommandé : stock disponible"))
+
+    total = 14 if demandes is None or demandes.empty else len(demandes)
+    active = 6 if demandes is None or demandes.empty else len(demandes[~demandes["statut"].isin(["Clôturé", "Cloturé", "Annulé", "Annule"])])
+    closed = 8 if demandes is None or demandes.empty else len(demandes[demandes["statut"].astype(str).str.contains("Clôturé|Cloturé", case=False, na=False)])
+    danger = 2 if demandes is None or demandes.empty else len(demandes[demandes["urgence"].astype(str).str.contains("Danger", case=False, na=False)])
+
+    responders_html = ""
+    if tentatives is not None and not tentatives.empty and "demande_id" in tentatives.columns:
+        rows = tentatives[tentatives["demande_id"] == intervention_id].sort_values("rang").head(3)
+    else:
+        rows = pd.DataFrame()
+
+    if rows.empty:
+        demo_rows = [
+            {"rang": 1, "depanneur_nom": depanneur, "distance_km": distance, "statut": "En attente", "stock_quantite": stock_qty, "score_ia": score},
+            {"rang": 2, "depanneur_nom": "BestDrive Roissy", "distance_km": "42.7", "statut": "En file", "stock_quantite": "4", "score_ia": "121.8"},
+            {"rang": 3, "depanneur_nom": "BestDrive Amiens", "distance_km": "62.1", "statut": "En file", "stock_quantite": "1", "score_ia": "96.4"},
+        ]
+        rows = pd.DataFrame(demo_rows)
+
+    for _, r in rows.iterrows():
+        status = ui_safe(r.get("statut", "En file"))
+        status_class = "green" if "Accept" in status else "amber" if "attente" in status.lower() else "blue"
+        responders_html += f"""
+        <div class="v2-responder">
+            <div><b>#{ui_safe(r.get('rang',''))} · {ui_safe(r.get('depanneur_nom',''))}</b><span>{ui_safe(r.get('distance_km',''))} km · stock {ui_safe(r.get('stock_quantite','0'))}</span></div>
+            <em class="pill {status_class}">{status}</em>
+            <strong>{ui_safe(r.get('score_ia',''))}</strong>
+        </div>
+        """
+
+    html = f"""
+    <style>
+    .v2-wrap {{
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: #e5eefb;
+        background:
+            radial-gradient(circle at 18% 8%, rgba(37,99,235,.34), transparent 34%),
+            radial-gradient(circle at 88% 12%, rgba(6,182,212,.22), transparent 32%),
+            linear-gradient(135deg, #050b16 0%, #08111f 48%, #0b1220 100%);
+        border: 1px solid rgba(148,163,184,.14);
+        border-radius: 34px;
+        padding: 26px;
+        overflow: hidden;
+        min-height: 930px;
+        box-shadow: 0 36px 120px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.05);
+    }}
+    .v2-top {{ display:flex; justify-content:space-between; gap:20px; align-items:center; margin-bottom:22px; }}
+    .brand {{ display:flex; align-items:center; gap:14px; }}
+    .brand-logo {{ width:48px;height:48px;border-radius:16px;background:linear-gradient(135deg,#2563eb,#06b6d4);display:grid;place-items:center;font-size:26px;box-shadow:0 16px 38px rgba(37,99,235,.38); }}
+    .brand h1 {{ margin:0; font-size:34px; letter-spacing:-.06em; line-height:1; color:#fff; }}
+    .brand p {{ margin:6px 0 0; color:#8fa4c1; font-size:14px; }}
+    .top-actions {{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }}
+    .pill {{ display:inline-flex; align-items:center; gap:7px; border-radius:999px; padding:8px 12px; font-size:12px; font-weight:900; font-style:normal; white-space:nowrap; }}
+    .green {{ background:rgba(34,197,94,.14); color:#86efac; border:1px solid rgba(34,197,94,.25); }}
+    .amber {{ background:rgba(245,158,11,.14); color:#fcd34d; border:1px solid rgba(245,158,11,.28); }}
+    .blue {{ background:rgba(59,130,246,.14); color:#93c5fd; border:1px solid rgba(59,130,246,.28); }}
+    .red {{ background:rgba(239,68,68,.14); color:#fca5a5; border:1px solid rgba(239,68,68,.28); }}
+    .v2-grid {{ display:grid; grid-template-columns: 1.25fr .75fr; gap:22px; }}
+    .panel {{ background:linear-gradient(180deg, rgba(15,23,42,.78), rgba(15,23,42,.46)); border:1px solid rgba(148,163,184,.14); border-radius:28px; box-shadow:0 24px 80px rgba(0,0,0,.30); backdrop-filter:blur(18px); }}
+    .panel.pad {{ padding:20px; }}
+    .kpis {{ display:grid; grid-template-columns: repeat(4,1fr); gap:12px; margin-bottom:16px; }}
+    .v2-kpi {{ padding:16px;border-radius:22px;background:rgba(2,6,23,.38);border:1px solid rgba(148,163,184,.12);position:relative;overflow:hidden; }}
+    .v2-kpi small {{ display:block;color:#7f93b1;text-transform:uppercase;font-weight:900;letter-spacing:.08em;font-size:10px; }}
+    .v2-kpi b {{ display:block;color:#fff;font-size:30px;letter-spacing:-.06em;margin-top:8px; }}
+    .map {{ height:390px; border-radius:28px; overflow:hidden; position:relative; background:
+        linear-gradient(90deg, rgba(37,99,235,.06) 1px, transparent 1px),
+        linear-gradient(rgba(37,99,235,.06) 1px, transparent 1px),
+        radial-gradient(circle at 58% 48%, rgba(56,189,248,.28), transparent 16%),
+        radial-gradient(circle at 24% 78%, rgba(37,99,235,.22), transparent 15%),
+        linear-gradient(135deg, #07111f, #0d1b2f);
+        background-size: 42px 42px, 42px 42px, auto, auto, auto;
+        border:1px solid rgba(148,163,184,.13);
+    }}
+    .road {{ position:absolute; height:12px; background:linear-gradient(90deg,transparent,rgba(148,163,184,.28),transparent); transform:rotate(-18deg); width:115%; left:-8%; top:48%; border-radius:999px; }}
+    .road.two {{ transform:rotate(22deg); top:63%; }}
+    .pin {{ position:absolute; width:38px;height:38px;border-radius:16px;display:grid;place-items:center;font-size:20px;box-shadow:0 14px 34px rgba(0,0,0,.42); }}
+    .truck {{ left:54%;top:45%; background:linear-gradient(135deg,#ef4444,#fb7185); }}
+    .w1 {{ left:38%;top:55%; background:linear-gradient(135deg,#22c55e,#14b8a6); }}
+    .w2 {{ left:73%;top:31%; background:linear-gradient(135deg,#2563eb,#06b6d4); }}
+    .w3 {{ left:19%;top:70%; background:linear-gradient(135deg,#f59e0b,#f97316); }}
+    .pulse {{ position:absolute; left:calc(54% - 42px); top:calc(45% - 42px); width:122px;height:122px;border-radius:50%; border:1px solid rgba(239,68,68,.34); animation:pulse 2.4s infinite; }}
+    @keyframes pulse {{ from {{ transform:scale(.78);opacity:.9; }} to {{ transform:scale(1.35);opacity:0; }} }}
+    .mission-card {{ position:absolute; left:18px; bottom:18px; width:330px; background:rgba(2,6,23,.72); border:1px solid rgba(148,163,184,.16); border-radius:22px; padding:16px; backdrop-filter:blur(14px); }}
+    .mission-card h3 {{ margin:0;color:white;font-size:19px;letter-spacing:-.03em; }}
+    .mission-card p {{ margin:8px 0 0;color:#9fb0c8;font-size:13px; }}
+    .sidebar {{ display:flex; flex-direction:column; gap:14px; }}
+    .detail h2 {{ margin:0 0 8px;color:white;font-size:28px;letter-spacing:-.06em; }}
+    .detail .sub {{ color:#8fa4c1;font-size:13px;margin-bottom:16px; }}
+    .kv {{ display:grid; grid-template-columns: 110px 1fr; gap:8px; padding:10px 0; border-bottom:1px solid rgba(148,163,184,.10); }}
+    .kv span {{ color:#7f93b1;font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.07em; }}
+    .kv b {{ color:#fff;font-size:14px;text-align:right; }}
+    .ai {{ display:grid; grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px; }}
+    .ai div {{ background:rgba(2,6,23,.34);border:1px solid rgba(148,163,184,.10);border-radius:18px;padding:12px;text-align:center; }}
+    .ai small {{ display:block;color:#7f93b1;font-size:10px;font-weight:900;text-transform:uppercase; }}
+    .ai b {{ display:block;color:white;font-size:21px;margin-top:5px;letter-spacing:-.04em; }}
+    .v2-responder {{ display:grid; grid-template-columns:1fr auto 54px; gap:10px; align-items:center; padding:12px; border-radius:18px; background:rgba(2,6,23,.32); border:1px solid rgba(148,163,184,.10); margin-top:10px; }}
+    .v2-responder b {{ display:block;color:white;font-size:14px; }}
+    .v2-responder span {{ display:block;color:#8fa4c1;font-size:12px;margin-top:3px; }}
+    .v2-responder strong {{ color:white; text-align:right; font-size:16px; }}
+    .phones {{ display:grid; grid-template-columns:repeat(2, 1fr); gap:18px; margin-top:22px; }}
+    .phone {{ width:100%; max-width:310px; min-height:395px; justify-self:center; border-radius:36px; padding:12px; background:linear-gradient(145deg,#111827,#020617); border:1px solid rgba(255,255,255,.12); box-shadow:0 30px 80px rgba(0,0,0,.42); }}
+    .screen {{ min-height:370px; border-radius:28px; background:linear-gradient(180deg,#0b1220,#111827); border:1px solid rgba(148,163,184,.12); padding:16px; overflow:hidden; }}
+    .screen h3 {{ margin:0;color:white;font-size:20px;letter-spacing:-.04em; }}
+    .screen p {{ color:#8fa4c1;font-size:12px;margin:4px 0 14px; }}
+    .field {{ background:rgba(15,23,42,.78);border:1px solid rgba(148,163,184,.14);border-radius:16px;padding:12px;margin:8px 0;color:#dbeafe;font-weight:800;font-size:13px; }}
+    .cta {{ margin-top:12px;border-radius:16px;padding:13px;text-align:center;background:linear-gradient(135deg,#2563eb,#06b6d4);color:white;font-weight:950;box-shadow:0 14px 30px rgba(37,99,235,.34); }}
+    .mission-mobile {{ background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(37,99,235,.12));border:1px solid rgba(148,163,184,.14);border-radius:22px;padding:14px;margin-top:12px; }}
+    .big {{ color:white;font-size:24px;font-weight:950;letter-spacing:-.05em; }}
+    .bottom-grid {{ display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px; }}
+    .ghost {{ border-radius:15px;padding:12px;text-align:center;border:1px solid rgba(148,163,184,.20);color:#cbd5e1;font-weight:900; }}
+    @media (max-width: 980px) {{ .v2-grid,.phones,.kpis {{ grid-template-columns:1fr; }} .v2-wrap {{ padding:16px; }} }}
+    </style>
+
+    <div class="v2-wrap">
+        <div class="v2-top">
+            <div class="brand">
+                <div class="brand-logo">🚛</div>
+                <div><h1>FleetRescue</h1><p>Plateforme SaaS de dépannage PL · Driver → Operator → Responder</p></div>
+            </div>
+            <div class="top-actions">
+                <em class="pill green">● Live dispatch</em>
+                <em class="pill blue">IA pneu activée</em>
+                <em class="pill amber">Stock Winpro simulé</em>
+            </div>
+        </div>
+
+        <div class="v2-grid">
+            <div class="panel pad">
+                <div class="kpis">
+                    <div class="v2-kpi"><small>Demandes</small><b>{total}</b></div>
+                    <div class="v2-kpi"><small>Actives</small><b>{active}</b></div>
+                    <div class="v2-kpi"><small>Danger</small><b>{danger}</b></div>
+                    <div class="v2-kpi"><small>Clôturées</small><b>{closed}</b></div>
+                </div>
+                <div class="map">
+                    <div class="road"></div><div class="road two"></div>
+                    <div class="pulse"></div>
+                    <div class="pin truck">🚛</div>
+                    <div class="pin w1">🛠️</div>
+                    <div class="pin w2">🛞</div>
+                    <div class="pin w3">⚡</div>
+                    <div class="mission-card">
+                        <h3>{intervention_id} · {immat}</h3>
+                        <p>{client} · {panne} · {dimension}<br>{statut}</p>
+                        <div style="margin-top:12px"><em class="pill red">{urgence}</em> <em class="pill green">ETA {eta} min</em></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="panel pad detail">
+                    <h2>Intervention active</h2>
+                    <div class="sub">Décision IA basée sur distance, disponibilité, stock et urgence.</div>
+                    <em class="pill blue">{statut}</em> <em class="pill {'red' if 'Danger' in urgence else 'amber'}">{urgence}</em>
+                    <div class="kv"><span>Client</span><b>{client}</b></div>
+                    <div class="kv"><span>Véhicule</span><b>{immat}</b></div>
+                    <div class="kv"><span>Panne</span><b>{panne}</b></div>
+                    <div class="kv"><span>Pneu</span><b>{dimension}</b></div>
+                    <div class="kv"><span>Dépanneur</span><b>{depanneur}</b></div>
+                    <div class="ai">
+                        <div><small>Score IA</small><b>{score}</b></div>
+                        <div><small>Distance</small><b>{distance}</b></div>
+                        <div><small>ETA</small><b>{eta}</b></div>
+                    </div>
+                </div>
+
+                <div class="panel pad">
+                    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;">
+                        <div><b style="color:white;font-size:18px;">Stock & cascade</b><p style="margin:4px 0 0;color:#8fa4c1;font-size:12px;">{stock_brand} · {stock_profile} · Qté {stock_qty}</p></div>
+                        <em class="pill green">{decision}</em>
+                    </div>
+                    {responders_html}
+                </div>
+            </div>
+        </div>
+
+        <div class="phones">
+            <div class="phone">
+                <div class="screen">
+                    <h3>🚛 App chauffeur</h3>
+                    <p>Déclarer une panne en moins de 2 minutes</p>
+                    <div class="field">Client · {client}</div>
+                    <div class="field">Véhicule · {immat}</div>
+                    <div class="field">Panne · {panne}</div>
+                    <div class="field">GPS · position téléphone</div>
+                    <div class="field">📷 Flanc pneu + incident</div>
+                    <div class="cta">DEMANDER UN DÉPANNAGE</div>
+                </div>
+            </div>
+            <div class="phone">
+                <div class="screen">
+                    <h3>🛠️ App dépanneur</h3>
+                    <p>Mission reçue façon Uber</p>
+                    <div class="mission-mobile">
+                        <em class="pill red">{urgence}</em>
+                        <div class="big" style="margin-top:12px;">{dimension}</div>
+                        <p>{immat} · {panne}<br>{distance} km · ETA {eta} min</p>
+                        <em class="pill green">Stock {stock_qty} · {stock_brand}</em>
+                    </div>
+                    <div class="bottom-grid"><div class="ghost">REFUSER</div><div class="cta" style="margin:0;">ACCEPTER</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    """
+    components.html(html, height=980, scrolling=True)
+
 # ============================================================
 # LANCEMENT APP
 # ============================================================
@@ -1667,13 +2063,25 @@ with k4:
     </div>
     """, unsafe_allow_html=True)
 
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    "✨ Vue produit",
     "🚛 Chauffeur",
     "🛠️ Dépanneur",
     "🎯 Cockpit opérateur",
     "⚙️ Administration",
     "📈 KPI"
 ])
+
+
+# ============================================================
+# ONGLET 0 — VUE PRODUIT HAUTE FIDÉLITÉ
+# ============================================================
+
+with tab0:
+    demandes = load_csv(DEMANDES_FILE)
+    tentatives = load_csv(TENTATIVES_FILE)
+    render_product_showcase(demandes, tentatives)
+
 
 
 # ============================================================
@@ -2157,4 +2565,6 @@ with tab5:
             demandes.to_csv(index=False).encode("utf-8"),
             file_name="demandes_depannage.csv",
             mime="text/csv",
+        )
+
         )
