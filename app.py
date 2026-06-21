@@ -1164,18 +1164,28 @@ with tab1:
         "A traiter manuellement"
     ]
 
-    if not demandes_existantes.empty:
-        demandes_ouvertes = demandes_existantes[
-            demandes_existantes["statut"].isin(statuts_ouverts)
+    # Important : on n'affiche PAS automatiquement une ancienne demande
+    # stockée dans le CSV. Sinon, au lancement de l'app, un ancien dépannage
+    # peut apparaître comme déjà accepté alors que le chauffeur n'a encore
+    # rien demandé dans cette session.
+    demande_session_id = st.session_state.get("chauffeur_demande_id", "")
+
+    if demande_session_id and not demandes_existantes.empty:
+        demande_active = demandes_existantes[
+            (demandes_existantes["id"] == demande_session_id)
+            & (demandes_existantes["statut"].isin(statuts_ouverts))
         ]
 
-        if not demandes_ouvertes.empty:
-            derniere_demande = demandes_ouvertes.sort_values(
-                "date_creation",
-                ascending=False
-            ).iloc[0]
+        if not demande_active.empty:
+            afficher_suivi_chauffeur(demande_active.iloc[0])
 
-            afficher_suivi_chauffeur(derniere_demande)
+            if st.button("🔄 Rafraîchir le suivi", use_container_width=True):
+                st.rerun()
+
+            if st.button("➕ Créer une nouvelle demande", use_container_width=True):
+                st.session_state["chauffeur_demande_id"] = ""
+                st.rerun()
+
             st.divider()
 
     ok_twilio, missing_key = twilio_is_configured()
@@ -1385,6 +1395,11 @@ with tab1:
             pd.concat([demandes, pd.DataFrame([demande])], ignore_index=True),
             DEMANDES_FILE
         )
+
+        # La demande créée devient la seule demande visible côté chauffeur
+        # dans cette session. Cela évite d'afficher une ancienne demande
+        # au prochain rafraîchissement de la page.
+        st.session_state["chauffeur_demande_id"] = demande_id
 
         ok_twilio, missing_key = twilio_is_configured()
 
