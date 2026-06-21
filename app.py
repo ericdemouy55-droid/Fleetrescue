@@ -132,25 +132,72 @@ def get_twilio_client():
     )
 
 
-def send_assistance_sms(demande_id, client, chauffeur, telephone, immatriculation, latitude, longitude, type_panne, lieu, dimension, urgence, commentaire):
+def generate_google_maps_link(latitude, longitude):
+    return f"https://www.google.com/maps?q={latitude},{longitude}"
+
+
+def get_sms_target_number(depanneur=None):
+    """
+    En mode démo, on force l'envoi vers DEMO_PHONE_NUMBER.
+    En mode réel, si USE_DEMO_PHONE_NUMBER = false dans secrets.toml,
+    le SMS part vers le téléphone du dépanneur sélectionné.
+    """
+    use_demo = st.secrets.get("USE_DEMO_PHONE_NUMBER", True)
+
+    if use_demo or depanneur is None:
+        return st.secrets["DEMO_PHONE_NUMBER"]
+
+    return depanneur["telephone"]
+
+
+def send_assistance_sms(demande_id, client, chauffeur, telephone, immatriculation, latitude, longitude, type_panne, lieu, dimension, urgence, commentaire, depanneur=None):
     client_twilio = get_twilio_client()
+    maps_link = generate_google_maps_link(latitude, longitude)
+    target_number = get_sms_target_number(depanneur)
+
+    depanneur_nom = depanneur["nom"] if depanneur is not None else "Dépanneur démo"
+    distance = depanneur.get("distance_km", "N/A") if depanneur is not None else "N/A"
 
     body = (
-        f"ALERTE DEPANNAGE\n"
-        f"ID:{demande_id}\n"
-        f"Client:{client}\n"
-        f"Chauffeur:{chauffeur}\n"
-        f"Tel:{telephone}\n"
-        f"Vehicule:{immatriculation}\n"
-        f"Panne:{type_panne}\n"
-        f"Urgence:{urgence}\n"
-        f"GPS:{latitude},{longitude}"
+        f"🚨 ALERTE DEPANNAGE PL\n"
+        f"ID : {demande_id}\n"
+        f"Dépanneur : {depanneur_nom}\n"
+        f"Distance : {distance} km\n"
+        f"Client : {client}\n"
+        f"Chauffeur : {chauffeur}\n"
+        f"Tel chauffeur : {telephone}\n"
+        f"Véhicule : {immatriculation}\n"
+        f"Panne : {type_panne}\n"
+        f"Dimension : {dimension}\n"
+        f"Lieu : {lieu}\n"
+        f"Urgence : {urgence}\n"
+        f"GPS : {latitude},{longitude}\n"
+        f"Itinéraire : {maps_link}\n"
+        f"Commentaire : {commentaire[:120]}"
     )
 
     message = client_twilio.messages.create(
         body=body,
         from_=st.secrets["TWILIO_FROM_NUMBER"],
-        to=st.secrets["DEMO_PHONE_NUMBER"]
+        to=target_number
+    )
+
+    return message.sid, target_number
+
+
+def send_driver_confirmation_sms(demande_id, telephone, client, immatriculation, type_panne):
+    client_twilio = get_twilio_client()
+
+    body = (
+        f"Orane Assistance : votre demande {demande_id} est enregistrée. "
+        f"Client : {client}. Véhicule : {immatriculation}. Panne : {type_panne}. "
+        f"Un dépanneur est en cours de sollicitation."
+    )
+
+    message = client_twilio.messages.create(
+        body=body,
+        from_=st.secrets["TWILIO_FROM_NUMBER"],
+        to=telephone
     )
 
     return message.sid
@@ -743,7 +790,9 @@ with tab1:
 
         if ok_twilio:
             try:
-                sms_sid = send_assistance_sms(
+                best_depanneur = None if candidats.empty else candidats.iloc[0].to_dict()
+
+                sms_sid, sms_target = send_assistance_sms(
                     demande_id=demande_id,
                     client=client,
                     chauffeur=chauffeur,
@@ -755,7 +804,16 @@ with tab1:
                     lieu=lieu,
                     dimension=dimension,
                     urgence=urgence,
-                    commentaire=commentaire
+                    commentaire=commentaire,
+                    depanneur=best_depanneur
+                )
+
+                driver_sms_sid = send_driver_confirmation_sms(
+                    demande_id=demande_id,
+                    telephone=telephone,
+                    client=client,
+                    immatriculation=immatriculation,
+                    type_panne=type_panne
                 )
 
                 call_sid = make_assistance_call(
@@ -768,7 +826,8 @@ with tab1:
                     urgence=urgence
                 )
 
-                st.success(f"SMS Twilio envoyé. SID : {sms_sid}")
+                st.success(f"SMS dépanneur envoyé vers {sms_target}. SID : {sms_sid}")
+                st.success(f"SMS chauffeur envoyé. SID : {driver_sms_sid}")
                 st.success(f"Appel Twilio déclenché. SID : {call_sid}")
 
             except Exception as e:
