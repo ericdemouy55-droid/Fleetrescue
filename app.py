@@ -830,8 +830,21 @@ with tab1:
                 st.success(f"SMS chauffeur envoyé. SID : {driver_sms_sid}")
                 st.success(f"Appel Twilio déclenché. SID : {call_sid}")
 
-            except Exception as e:
-                st.error(f"Demande créée, mais erreur Twilio : {e}")
+except Exception as e:
+    st.error(f"Erreur Twilio : {e}")
+    st.error(f"Type : {type(e)}")
+
+    if hasattr(e, "status"):
+        st.error(f"HTTP status : {e.status}")
+
+    if hasattr(e, "code"):
+        st.error(f"Code Twilio : {e.code}")
+
+    if hasattr(e, "msg"):
+        st.error(f"Message Twilio : {e.msg}")
+
+    st.write("FROM utilisé :", st.secrets["TWILIO_FROM_NUMBER"])
+    st.write("TO démo :", st.secrets["DEMO_PHONE_NUMBER"])
         else:
             st.warning(f"Demande créée, mais SMS/appel non envoyés. Secret manquant : {missing_key}")
 
