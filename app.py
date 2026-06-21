@@ -2476,22 +2476,30 @@ with tab3:
             render_intervention_card(demande)
             render_ai_stock_card(demande)
 
-            st.markdown('<div class="fr-section-title">⚡ Actions opérateur</div>', unsafe_allow_html=True)
+            st.markdown('<div class="fr-section-title">⚡ Supervision opérateur</div>', unsafe_allow_html=True)
+            st.markdown("""
+            <div class="fr-mini-note">
+                L’opérateur ne valide pas la mission. La mission est proposée au dépanneur sélectionné par l’IA ;
+                c’est le dépanneur qui accepte, refuse, passe en route, indique son arrivée puis clôture depuis son application.
+                Le cockpit sert à superviser, relancer, escalader ou corriger le flux.
+            </div>
+            """, unsafe_allow_html=True)
+
             c1, c2 = st.columns(2)
-            if c1.button("✅ Accepter", type="primary", use_container_width=True):
+            if c1.button("🧪 Simuler acceptation dépanneur", type="primary", use_container_width=True):
                 accepter_tentative(selected_id)
                 st.rerun()
 
-            if c2.button("⏱️ Suivant", use_container_width=True):
+            if c2.button("⏱️ Refus / pas de réponse → suivant", use_container_width=True):
                 passer_au_suivant(selected_id)
                 st.rerun()
 
             c3, c4 = st.columns(2)
-            if c3.button("🚚 En route", use_container_width=True):
-                update_demande_status(selected_id, "Dépanneur en route")
+            if c3.button("🚨 Escalader en traitement manuel", use_container_width=True):
+                update_demande_status(selected_id, "A traiter manuellement")
                 st.rerun()
 
-            if c4.button("🏁 Clôturer", use_container_width=True):
+            if c4.button("🏁 Clôturer admin", use_container_width=True):
                 cloturer(selected_id)
                 st.rerun()
 
