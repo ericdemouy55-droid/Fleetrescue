@@ -143,6 +143,8 @@ def get_sms_target_number(depanneur=None):
     le SMS part vers le téléphone du dépanneur sélectionné.
     """
     use_demo = st.secrets.get("USE_DEMO_PHONE_NUMBER", True)
+    if isinstance(use_demo, str):
+        use_demo = use_demo.strip().lower() in ["true", "1", "yes", "oui"]
 
     if use_demo or depanneur is None:
         return st.secrets["DEMO_PHONE_NUMBER"]
@@ -188,6 +190,11 @@ def send_assistance_sms(demande_id, client, chauffeur, telephone, immatriculatio
 def send_driver_confirmation_sms(demande_id, telephone, client, immatriculation, type_panne):
     client_twilio = get_twilio_client()
 
+    # En mode démo / compte Trial Twilio, on force aussi le SMS chauffeur
+    # vers le numéro vérifié DEMO_PHONE_NUMBER.
+    use_demo = st.secrets.get("USE_DEMO_PHONE_NUMBER", True)
+    target_number = st.secrets["DEMO_PHONE_NUMBER"] if use_demo else telephone
+
     body = (
         f"Orane Assistance : votre demande {demande_id} est enregistrée. "
         f"Client : {client}. Véhicule : {immatriculation}. Panne : {type_panne}. "
@@ -197,10 +204,10 @@ def send_driver_confirmation_sms(demande_id, telephone, client, immatriculation,
     message = client_twilio.messages.create(
         body=body,
         from_=st.secrets["TWILIO_FROM_NUMBER"],
-        to=telephone
+        to=target_number
     )
 
-    return message.sid
+    return message.sid, target_number
 
 
 def make_assistance_call(demande_id, client, chauffeur, immatriculation, type_panne, lieu, urgence):
@@ -790,6 +797,9 @@ with tab1:
 
         if ok_twilio:
             try:
+                st.write("FROM utilisé :", st.secrets["TWILIO_FROM_NUMBER"])
+                st.write("TO démo :", st.secrets["DEMO_PHONE_NUMBER"])
+
                 best_depanneur = None if candidats.empty else candidats.iloc[0].to_dict()
 
                 sms_sid, sms_target = send_assistance_sms(
@@ -808,7 +818,7 @@ with tab1:
                     depanneur=best_depanneur
                 )
 
-                driver_sms_sid = send_driver_confirmation_sms(
+                driver_sms_sid, driver_sms_target = send_driver_confirmation_sms(
                     demande_id=demande_id,
                     telephone=telephone,
                     client=client,
@@ -827,24 +837,25 @@ with tab1:
                 )
 
                 st.success(f"SMS dépanneur envoyé vers {sms_target}. SID : {sms_sid}")
-                st.success(f"SMS chauffeur envoyé. SID : {driver_sms_sid}")
+                st.success(f"SMS chauffeur envoyé vers {driver_sms_target}. SID : {driver_sms_sid}")
                 st.success(f"Appel Twilio déclenché. SID : {call_sid}")
 
-except Exception as e:
-    st.error(f"Erreur Twilio : {e}")
-    st.error(f"Type : {type(e)}")
+            except Exception as e:
+                st.error(f"Erreur Twilio : {e}")
+                st.error(f"Type : {type(e)}")
 
-    if hasattr(e, "status"):
-        st.error(f"HTTP status : {e.status}")
+                if hasattr(e, "status"):
+                    st.error(f"HTTP status : {e.status}")
 
-    if hasattr(e, "code"):
-        st.error(f"Code Twilio : {e.code}")
+                if hasattr(e, "code"):
+                    st.error(f"Code Twilio : {e.code}")
 
-    if hasattr(e, "msg"):
-        st.error(f"Message Twilio : {e.msg}")
+                if hasattr(e, "msg"):
+                    st.error(f"Message Twilio : {e.msg}")
 
-    st.write("FROM utilisé :", st.secrets["TWILIO_FROM_NUMBER"])
-    st.write("TO démo :", st.secrets["DEMO_PHONE_NUMBER"])
+                st.write("FROM utilisé :", st.secrets["TWILIO_FROM_NUMBER"])
+                st.write("TO démo :", st.secrets["DEMO_PHONE_NUMBER"])
+
         else:
             st.warning(f"Demande créée, mais SMS/appel non envoyés. Secret manquant : {missing_key}")
 
