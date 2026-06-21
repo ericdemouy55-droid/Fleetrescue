@@ -357,6 +357,7 @@ DATA_DIR.mkdir(exist_ok=True)
 DEPANNEURS_FILE = DATA_DIR / "depanneurs_demo.csv"
 DEMANDES_FILE = DATA_DIR / "demandes_demo.csv"
 TENTATIVES_FILE = DATA_DIR / "tentatives_demo.csv"
+STOCKS_FILE = DATA_DIR / "stocks_demo.csv"
 
 
 # ============================================================
@@ -387,6 +388,36 @@ def init_data():
             "pl", "disponible", "stock", "score"
         ]).to_csv(DEPANNEURS_FILE, index=False)
 
+    # Stock simulé : dans une vraie version, cette table sera remplacée
+    # par une API Winpro / Innovaxo. On garde le même format cible.
+    if not STOCKS_FILE.exists():
+        pd.DataFrame([
+            ["D001", "315/80 R22.5", "Continental", "Conti Hybrid HS3", 4, "2026-06-21 08:00:00"],
+            ["D001", "315/70 R22.5", "Continental", "Conti EcoPlus HS3", 2, "2026-06-21 08:00:00"],
+            ["D001", "385/65 R22.5", "Semperit", "Runner T3", 1, "2026-06-21 08:00:00"],
+            ["D002", "315/80 R22.5", "Continental", "Conti Hybrid HD3", 6, "2026-06-21 08:00:00"],
+            ["D002", "295/80 R22.5", "Uniroyal", "FH40", 3, "2026-06-21 08:00:00"],
+            ["D003", "315/70 R22.5", "Continental", "Conti EcoRegional HS3", 5, "2026-06-21 08:00:00"],
+            ["D003", "385/65 R22.5", "Continental", "Conti Hybrid HT3", 2, "2026-06-21 08:00:00"],
+            ["D004", "315/80 R22.5", "Barum", "BF200R", 1, "2026-06-21 08:00:00"],
+            ["D004", "385/65 R22.5", "Continental", "Conti Hybrid HT3", 0, "2026-06-21 08:00:00"],
+            ["D005", "315/80 R22.5", "Continental", "Conti Hybrid HS3", 2, "2026-06-21 08:00:00"],
+            ["D006", "315/70 R22.5", "Semperit", "Runner D2", 1, "2026-06-21 08:00:00"],
+            ["D007", "315/80 R22.5", "Continental", "Conti Hybrid HD3", 4, "2026-06-21 08:00:00"],
+            ["D007", "385/65 R22.5", "Continental", "Conti Hybrid HT3", 2, "2026-06-21 08:00:00"],
+            ["D008", "315/80 R22.5", "Continental", "Conti EcoPlus HS3", 2, "2026-06-21 08:00:00"],
+            ["D009", "315/80 R22.5", "Continental", "Conti Hybrid HS3", 5, "2026-06-21 08:00:00"],
+            ["D009", "385/65 R22.5", "Semperit", "Runner T3", 4, "2026-06-21 08:00:00"],
+            ["D010", "295/80 R22.5", "Continental", "Conti Hybrid HD3", 2, "2026-06-21 08:00:00"],
+            ["D011", "315/70 R22.5", "Continental", "Conti EcoRegional HD3", 3, "2026-06-21 08:00:00"],
+            ["D012", "315/80 R22.5", "Continental", "Conti Hybrid HS3", 3, "2026-06-21 08:00:00"],
+            ["D013", "315/80 R22.5", "Semperit", "Runner D2", 2, "2026-06-21 08:00:00"],
+            ["D014", "315/80 R22.5", "Continental", "Conti Hybrid HD3", 3, "2026-06-21 08:00:00"],
+            ["D015", "315/70 R22.5", "Continental", "Conti Hybrid HS3", 2, "2026-06-21 08:00:00"],
+        ], columns=[
+            "depanneur_id", "dimension", "marque", "profil", "quantite", "last_update"
+        ]).to_csv(STOCKS_FILE, index=False)
+
     if not DEMANDES_FILE.exists():
         pd.DataFrame(columns=[
             "id", "date_creation", "client", "chauffeur",
@@ -396,7 +427,9 @@ def init_data():
             "commentaire", "photo_1", "photo_2", "date_cloture",
             "depanneur_nom", "depanneur_telephone", "depanneur_latitude",
             "depanneur_longitude", "eta_minutes", "tracking_url",
-            "date_prise_en_charge"
+            "date_prise_en_charge", "stock_disponible", "stock_quantite",
+            "stock_marque", "stock_profil", "score_ia", "decision_ia",
+            "date_mise_a_jour_statut"
         ]).to_csv(DEMANDES_FILE, index=False)
 
     if not TENTATIVES_FILE.exists():
@@ -404,7 +437,9 @@ def init_data():
             "id", "demande_id", "rang", "depanneur_id",
             "depanneur_nom", "distance_km", "canal",
             "statut", "date_tentative", "depanneur_telephone",
-            "depanneur_latitude", "depanneur_longitude"
+            "depanneur_latitude", "depanneur_longitude", "stock_disponible",
+            "stock_quantite", "stock_marque", "stock_profil", "score_ia",
+            "decision_ia"
         ]).to_csv(TENTATIVES_FILE, index=False)
 
 
@@ -444,12 +479,29 @@ def ensure_data_schema():
         "eta_minutes": "",
         "tracking_url": "",
         "date_prise_en_charge": "",
+        "stock_disponible": False,
+        "stock_quantite": 0,
+        "stock_marque": "",
+        "stock_profil": "",
+        "score_ia": 0,
+        "decision_ia": "",
+        "date_mise_a_jour_statut": "",
     })
 
     ensure_columns(TENTATIVES_FILE, {
         "depanneur_telephone": "",
         "depanneur_latitude": "",
         "depanneur_longitude": "",
+        "stock_disponible": False,
+        "stock_quantite": 0,
+        "stock_marque": "",
+        "stock_profil": "",
+        "score_ia": 0,
+        "decision_ia": "",
+    })
+
+    ensure_columns(STOCKS_FILE, {
+        "last_update": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
     })
 
 
@@ -472,17 +524,115 @@ def distance_km(lat1, lon1, lat2, lon2):
     return r * 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 
+def to_bool(value):
+    if isinstance(value, bool):
+        return value
+    if pd.isna(value):
+        return False
+    return str(value).strip().lower() in ["true", "1", "yes", "oui", "vrai"]
+
+
+def normalize_dimension(value):
+    return str(value).upper().replace(" ", "").replace("/", "/")
+
+
+def get_stock_for_depanneur(depanneur_id, dimension):
+    """
+    Simulation API stock Winpro / Innovaxo.
+    Aujourd'hui : lecture dans stocks_demo.csv.
+    Demain : appel HTTP/API ou connecteur base de données.
+    """
+    stocks = load_csv(STOCKS_FILE)
+    if stocks.empty or not dimension or dimension == "Autre / inconnue":
+        return {
+            "available": False,
+            "quantity": 0,
+            "brand": "",
+            "profile": "",
+            "last_update": "",
+        }
+
+    dim_norm = normalize_dimension(dimension)
+    stocks = stocks.copy()
+    stocks["dimension_norm"] = stocks["dimension"].apply(normalize_dimension)
+
+    rows = stocks[
+        (stocks["depanneur_id"] == depanneur_id)
+        & (stocks["dimension_norm"] == dim_norm)
+    ]
+
+    if rows.empty:
+        return {
+            "available": False,
+            "quantity": 0,
+            "brand": "",
+            "profile": "",
+            "last_update": "",
+        }
+
+    row = rows.sort_values("quantite", ascending=False).iloc[0]
+    quantity = int(row.get("quantite", 0))
+
+    return {
+        "available": quantity > 0,
+        "quantity": quantity,
+        "brand": row.get("marque", ""),
+        "profile": row.get("profil", ""),
+        "last_update": row.get("last_update", ""),
+    }
+
+
+def scorer_depanneur(depanneur, demande, distance_value, stock_info):
+    """
+    Moteur de dispatch automatique.
+    L'objectif n'est pas seulement de trouver le plus proche,
+    mais celui qui a la meilleure probabilité de résoudre vite.
+    """
+    score = 100.0
+
+    # Distance : pénalité progressive.
+    score -= float(distance_value) * 1.2
+
+    # Stock : énorme facteur de décision.
+    if stock_info["available"]:
+        score += 45
+        score += min(int(stock_info["quantity"]), 6) * 2
+    else:
+        score -= 70
+
+    # Urgence / autoroute.
+    urgence = demande.get("urgence", "")
+    if urgence == "Danger immédiat / voie rapide":
+        score += 20 if to_bool(depanneur.get("autoroute", False)) else -80
+    elif urgence == "Urgent":
+        score += 10
+
+    # Qualité / performance historique simulée.
+    try:
+        score += float(depanneur.get("score", 0)) * 8
+    except Exception:
+        pass
+
+    # Disponibilité.
+    if to_bool(depanneur.get("disponible", False)):
+        score += 20
+    else:
+        score -= 200
+
+    return round(score, 1)
+
+
 def trouver_depanneurs(demande, depanneurs):
     rows = []
 
     for _, d in depanneurs.iterrows():
-        if not bool(d["disponible"]) or not bool(d["pl"]):
+        if not to_bool(d.get("disponible", False)) or not to_bool(d.get("pl", False)):
             continue
 
-        if demande["lieu"] == "Autoroute" and not bool(d["autoroute"]):
+        if demande["lieu"] == "Autoroute" and not to_bool(d.get("autoroute", False)):
             continue
 
-        if demande["lieu"] == "Route" and not bool(d["route"]):
+        if demande["lieu"] == "Route" and not to_bool(d.get("route", False)):
             continue
 
         dist = distance_km(
@@ -495,10 +645,28 @@ def trouver_depanneurs(demande, depanneurs):
         if dist <= float(d["zone_km"]):
             row = d.to_dict()
             row["distance_km"] = round(dist, 1)
+
+            stock_info = get_stock_for_depanneur(row["id"], demande.get("dimension", ""))
+            row["stock_disponible"] = stock_info["available"]
+            row["stock_quantite"] = stock_info["quantity"]
+            row["stock_marque"] = stock_info["brand"]
+            row["stock_profil"] = stock_info["profile"]
+            row["stock_last_update"] = stock_info["last_update"]
+
+            row["score_ia"] = scorer_depanneur(row, demande, row["distance_km"], stock_info)
+
+            if stock_info["available"]:
+                row["decision_ia"] = "Recommandé : stock disponible"
+            else:
+                row["decision_ia"] = "Dégradé : stock non confirmé"
+
             rows.append(row)
 
+    if not rows:
+        return pd.DataFrame()
+
     return pd.DataFrame(
-        sorted(rows, key=lambda x: (x["distance_km"], -float(x["score"])))
+        sorted(rows, key=lambda x: (-float(x["score_ia"]), x["distance_km"]))
     )
 
 
@@ -557,7 +725,10 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
             Réseau : {d["reseau"]}<br>
             Distance : {d["distance_km"]} km<br>
             Téléphone : {d["telephone"]}<br>
-            Stock : {d["stock"]}
+            Stock demandé : {"✅ Oui" if d.get("stock_disponible", False) else "⚠️ Non confirmé"}<br>
+            Quantité : {d.get("stock_quantite", 0)}<br>
+            Marque/profil : {d.get("stock_marque", "")} {d.get("stock_profil", "")}<br>
+            Score IA : {d.get("score_ia", "")}
             """,
             icon=folium.Icon(
                 color="green",
@@ -655,12 +826,18 @@ def creer_tentatives(demande_id, candidats):
             "depanneur_id": d["id"],
             "depanneur_nom": d["nom"],
             "distance_km": d["distance_km"],
-            "canal": "Appel + SMS + Email",
+            "canal": "App dépanneur + SMS + Appel",
             "statut": "En attente" if rang == 1 else "En file",
             "date_tentative": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "depanneur_telephone": d.get("telephone", ""),
             "depanneur_latitude": d.get("latitude", ""),
             "depanneur_longitude": d.get("longitude", ""),
+            "stock_disponible": d.get("stock_disponible", False),
+            "stock_quantite": d.get("stock_quantite", 0),
+            "stock_marque": d.get("stock_marque", ""),
+            "stock_profil": d.get("stock_profil", ""),
+            "score_ia": d.get("score_ia", 0),
+            "decision_ia": d.get("decision_ia", ""),
         })
 
     save_csv(
@@ -707,6 +884,11 @@ def accepter_tentative(demande_id):
     demandes.loc[d_idx, "distance_km"] = dist
     demandes.loc[d_idx, "eta_minutes"] = estimate_eta_minutes(dist)
     demandes.loc[d_idx, "date_prise_en_charge"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    demandes.loc[d_idx, "date_mise_a_jour_statut"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    for col in ["stock_disponible", "stock_quantite", "stock_marque", "stock_profil", "score_ia", "decision_ia"]:
+        if col in tentatives.columns:
+            demandes.loc[d_idx, col] = tentatives.loc[idx, col]
 
     if dep_lat != "" and dep_lon != "":
         demandes.loc[d_idx, "tracking_url"] = generate_google_maps_directions_link(
@@ -760,6 +942,161 @@ def cloturer(demande_id):
         save_csv(demandes, DEMANDES_FILE)
 
 
+
+def update_demande_status(demande_id, statut):
+    demandes = load_csv(DEMANDES_FILE)
+    idx = demandes[demandes.id == demande_id].index
+
+    if len(idx):
+        demandes.loc[idx[0], "statut"] = statut
+        demandes.loc[idx[0], "date_mise_a_jour_statut"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        if statut == "Clôturé":
+            demandes.loc[idx[0], "date_cloture"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_csv(demandes, DEMANDES_FILE)
+
+
+def depanneur_refuse_mission(demande_id):
+    passer_au_suivant(demande_id)
+    demandes = load_csv(DEMANDES_FILE)
+    tentatives = load_csv(TENTATIVES_FILE)
+
+    active = tentatives[
+        (tentatives.demande_id == demande_id)
+        & (tentatives.statut == "En attente")
+    ]
+
+    idx = demandes[demandes.id == demande_id].index
+    if len(idx):
+        if active.empty:
+            demandes.loc[idx[0], "statut"] = "A traiter manuellement"
+        else:
+            row = active.iloc[0]
+            demandes.loc[idx[0], "statut"] = "Mission proposée au dépanneur"
+            demandes.loc[idx[0], "depanneur_nom"] = row.get("depanneur_nom", "")
+            demandes.loc[idx[0], "depanneur_telephone"] = row.get("depanneur_telephone", "")
+            demandes.loc[idx[0], "depanneur_latitude"] = row.get("depanneur_latitude", "")
+            demandes.loc[idx[0], "depanneur_longitude"] = row.get("depanneur_longitude", "")
+            demandes.loc[idx[0], "distance_km"] = row.get("distance_km", "")
+            demandes.loc[idx[0], "eta_minutes"] = estimate_eta_minutes(row.get("distance_km", ""))
+            for col in ["stock_disponible", "stock_quantite", "stock_marque", "stock_profil", "score_ia", "decision_ia"]:
+                if col in row.index:
+                    demandes.loc[idx[0], col] = row.get(col, "")
+        demandes.loc[idx[0], "date_mise_a_jour_statut"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        save_csv(demandes, DEMANDES_FILE)
+
+
+def afficher_app_depanneur():
+    st.subheader("📱 App dépanneur")
+    st.caption("Simulation de l'application mobile utilisée par le dépanneur : accepter, partir, arriver, terminer.")
+
+    demandes = load_csv(DEMANDES_FILE)
+    tentatives = load_csv(TENTATIVES_FILE)
+
+    if demandes.empty:
+        st.info("Aucune mission pour le moment.")
+        return
+
+    statuts_depanneur = [
+        "Mission proposée au dépanneur",
+        "Recherche dépanneur",
+        "Accepté par dépanneur",
+        "Dépanneur en route",
+        "Dépanneur sur place",
+        "A traiter manuellement",
+    ]
+
+    missions = demandes[demandes["statut"].isin(statuts_depanneur)].copy()
+
+    if missions.empty:
+        st.success("Aucune mission active côté dépanneur.")
+        return
+
+    missions = missions.sort_values("date_creation", ascending=False)
+    mission_id = st.selectbox(
+        "Mission",
+        missions["id"].tolist(),
+        format_func=lambda x: f"{x} — {missions[missions['id'] == x].iloc[0]['immatriculation']} — {missions[missions['id'] == x].iloc[0]['statut']}"
+    )
+
+    demande = missions[missions["id"] == mission_id].iloc[0]
+    current_tentatives = tentatives[tentatives.demande_id == mission_id].sort_values("rang")
+    active = current_tentatives[current_tentatives.statut == "En attente"]
+
+    if not active.empty:
+        mission_dep = active.iloc[0]
+        depanneur_nom = mission_dep.get("depanneur_nom", demande.get("depanneur_nom", ""))
+        depanneur_tel = mission_dep.get("depanneur_telephone", demande.get("depanneur_telephone", ""))
+        score_ia = mission_dep.get("score_ia", demande.get("score_ia", ""))
+        decision_ia = mission_dep.get("decision_ia", demande.get("decision_ia", ""))
+        stock_ok = mission_dep.get("stock_disponible", demande.get("stock_disponible", False))
+        stock_qte = mission_dep.get("stock_quantite", demande.get("stock_quantite", 0))
+        stock_label = "✅ disponible" if to_bool(stock_ok) else "⚠️ non confirmé"
+    else:
+        depanneur_nom = demande.get("depanneur_nom", "")
+        depanneur_tel = demande.get("depanneur_telephone", "")
+        score_ia = demande.get("score_ia", "")
+        decision_ia = demande.get("decision_ia", "")
+        stock_ok = demande.get("stock_disponible", False)
+        stock_qte = demande.get("stock_quantite", 0)
+        stock_label = "✅ disponible" if to_bool(stock_ok) else "⚠️ non confirmé"
+
+    eta = demande.get("eta_minutes", "")
+    distance = demande.get("distance_km", "")
+    maps_link = generate_google_maps_link(demande.get("latitude", ""), demande.get("longitude", ""))
+
+    st.markdown(
+        f"""
+        <div class="mobile-card">
+            <div class="mobile-card-title">🚨 Nouvelle mission</div>
+            <div class="mobile-status">{demande.get('statut', '')}</div>
+            <br>
+            <b>Dépanneur proposé :</b> {depanneur_nom}<br>
+            <b>Téléphone :</b> {depanneur_tel}<br>
+            <b>Client :</b> {demande.get('client', '')}<br>
+            <b>Chauffeur :</b> {demande.get('chauffeur', '')}<br>
+            <b>Véhicule :</b> {demande.get('immatriculation', '')}<br>
+            <b>Panne :</b> {demande.get('type_panne', '')}<br>
+            <b>Dimension :</b> {demande.get('dimension', '')}<br>
+            <b>Stock :</b> {stock_label} — Qté {stock_qte}<br>
+            <b>Distance :</b> {distance} km<br>
+            <b>ETA :</b> {eta} min<br>
+            <b>Score IA :</b> {score_ia}<br>
+            <b>Décision IA :</b> {decision_ia}
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.link_button("🗺️ Ouvrir le lieu de panne", maps_link, use_container_width=True)
+
+    if demande.get("statut", "") in ["Mission proposée au dépanneur", "Recherche dépanneur"]:
+        c1, c2 = st.columns(2)
+        if c1.button("✅ Accepter la mission", type="primary", use_container_width=True):
+            accepter_tentative(mission_id)
+            st.rerun()
+        if c2.button("❌ Refuser / indisponible", use_container_width=True):
+            depanneur_refuse_mission(mission_id)
+            st.rerun()
+
+    if demande.get("statut", "") == "Accepté par dépanneur":
+        if st.button("🚚 Je pars / En route", type="primary", use_container_width=True):
+            update_demande_status(mission_id, "Dépanneur en route")
+            st.rerun()
+
+    if demande.get("statut", "") == "Dépanneur en route":
+        if st.button("📍 Je suis sur place", type="primary", use_container_width=True):
+            update_demande_status(mission_id, "Dépanneur sur place")
+            st.rerun()
+
+    if demande.get("statut", "") == "Dépanneur sur place":
+        if st.button("🏁 Intervention terminée", type="primary", use_container_width=True):
+            update_demande_status(mission_id, "Clôturé")
+            st.rerun()
+
+    with st.expander("Voir la cascade complète"):
+        st.dataframe(current_tentatives, use_container_width=True, hide_index=True)
+
+
 # ============================================================
 # LANCEMENT APP
 # ============================================================
@@ -801,10 +1138,11 @@ with k4:
     </div>
     """, unsafe_allow_html=True)
 
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🚨 Demande chauffeur",
+    "📱 App dépanneur",
     "🧭 Superviseur",
-    "🛠️ Dépanneurs",
+    "🛠️ Référentiel",
     "📊 Reporting"
 ])
 
@@ -819,7 +1157,10 @@ with tab1:
     demandes_existantes = load_csv(DEMANDES_FILE)
     statuts_ouverts = [
         "Recherche dépanneur",
+        "Mission proposée au dépanneur",
         "Accepté par dépanneur",
+        "Dépanneur en route",
+        "Dépanneur sur place",
         "A traiter manuellement"
     ]
 
@@ -982,6 +1323,13 @@ with tab1:
             "eta_minutes": "",
             "tracking_url": "",
             "date_prise_en_charge": "",
+            "stock_disponible": False,
+            "stock_quantite": 0,
+            "stock_marque": "",
+            "stock_profil": "",
+            "score_ia": 0,
+            "decision_ia": "",
+            "date_mise_a_jour_statut": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         }
 
         candidats = trouver_depanneurs(demande, depanneurs)
@@ -991,6 +1339,7 @@ with tab1:
             st.error("Aucun dépanneur éligible trouvé. Bascule en traitement manuel.")
         else:
             best_depanneur = candidats.iloc[0].to_dict()
+            demande["statut"] = "Mission proposée au dépanneur"
             demande["depanneur_nom"] = best_depanneur.get("nom", "")
             demande["depanneur_telephone"] = best_depanneur.get("telephone", "")
             demande["depanneur_latitude"] = best_depanneur.get("latitude", "")
@@ -1003,6 +1352,12 @@ with tab1:
                 latitude,
                 longitude
             )
+            demande["stock_disponible"] = best_depanneur.get("stock_disponible", False)
+            demande["stock_quantite"] = best_depanneur.get("stock_quantite", 0)
+            demande["stock_marque"] = best_depanneur.get("stock_marque", "")
+            demande["stock_profil"] = best_depanneur.get("stock_profil", "")
+            demande["score_ia"] = best_depanneur.get("score_ia", 0)
+            demande["decision_ia"] = best_depanneur.get("decision_ia", "")
 
             afficher_carte_depanneurs(
                 latitude=latitude,
@@ -1018,10 +1373,10 @@ with tab1:
 
             creer_tentatives(demande_id, candidats)
 
-            st.success(f"Demande créée : {demande_id}. Dépanneur le plus proche sollicité.")
+            st.success(f"Demande créée : {demande_id}. Dispatch IA lancé vers le meilleur dépanneur.")
 
             st.dataframe(
-                candidats[["nom", "reseau", "ville", "distance_km", "telephone", "stock", "score"]],
+                candidats[["nom", "reseau", "ville", "distance_km", "telephone", "stock_disponible", "stock_quantite", "stock_marque", "stock_profil", "score_ia", "decision_ia"]],
                 use_container_width=True,
                 hide_index=True
             )
@@ -1099,10 +1454,18 @@ with tab1:
 
 
 # ============================================================
-# ONGLET 2 — SUPERVISEUR
+# ONGLET 2 — APP DÉPANNEUR
 # ============================================================
 
 with tab2:
+    afficher_app_depanneur()
+
+
+# ============================================================
+# ONGLET 3 — SUPERVISEUR
+# ============================================================
+
+with tab3:
     st.subheader("Tableau superviseur")
 
     demandes = load_csv(DEMANDES_FILE)
@@ -1156,10 +1519,10 @@ with tab2:
 
 
 # ============================================================
-# ONGLET 3 — DÉPANNEURS
+# ONGLET 4 — RÉFÉRENTIEL DÉPANNEURS
 # ============================================================
 
-with tab3:
+with tab4:
     st.subheader("Référentiel dépanneurs")
 
     depanneurs = load_csv(DEPANNEURS_FILE)
@@ -1175,12 +1538,26 @@ with tab3:
         save_csv(edited, DEPANNEURS_FILE)
         st.success("Référentiel sauvegardé.")
 
+    st.divider()
+    st.subheader("Stock simulé PDV / future API Winpro-Innovaxo")
+    stocks = load_csv(STOCKS_FILE)
+    edited_stocks = st.data_editor(
+        stocks,
+        use_container_width=True,
+        hide_index=True,
+        num_rows="dynamic"
+    )
+
+    if st.button("💾 Sauvegarder le stock simulé"):
+        save_csv(edited_stocks, STOCKS_FILE)
+        st.success("Stock simulé sauvegardé.")
+
 
 # ============================================================
-# ONGLET 4 — REPORTING
+# ONGLET 5 — REPORTING
 # ============================================================
 
-with tab4:
+with tab5:
     st.subheader("Reporting démo")
 
     demandes = load_csv(DEMANDES_FILE)
