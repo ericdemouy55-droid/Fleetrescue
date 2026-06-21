@@ -102,6 +102,66 @@ st.markdown("""
 .stAlert {
     border-radius: 14px;
 }
+
+@media (max-width: 768px) {
+    .main-header {
+        padding: 16px;
+        border-radius: 14px;
+        margin-bottom: 16px;
+    }
+
+    .main-title {
+        font-size: 28px;
+        line-height: 1.1;
+    }
+
+    .main-subtitle {
+        font-size: 14px;
+    }
+
+    .kpi-card {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    .kpi-value {
+        font-size: 24px;
+    }
+
+    .stButton>button {
+        width: 100%;
+        min-height: 56px;
+        font-size: 18px;
+    }
+
+    div[data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+    }
+}
+
+.mobile-card {
+    background: white;
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0px 2px 12px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    border-left: 6px solid #f97316;
+}
+
+.mobile-card-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.mobile-status {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f97316;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -134,6 +194,23 @@ def get_twilio_client():
 
 def generate_google_maps_link(latitude, longitude):
     return f"https://www.google.com/maps?q={latitude},{longitude}"
+
+
+def generate_google_maps_directions_link(origin_lat, origin_lon, dest_lat, dest_lon):
+    return (
+        "https://www.google.com/maps/dir/"
+        f"{origin_lat},{origin_lon}/{dest_lat},{dest_lon}"
+    )
+
+
+def estimate_eta_minutes(distance_km_value, average_speed_kmh=60):
+    try:
+        distance = float(distance_km_value)
+        if distance <= 0:
+            return 5
+        return max(5, int(round((distance / average_speed_kmh) * 60)))
+    except Exception:
+        return ""
 
 
 def get_sms_target_number(depanneur=None):
@@ -193,6 +270,9 @@ def send_driver_confirmation_sms(demande_id, telephone, client, immatriculation,
     # En mode démo / compte Trial Twilio, on force aussi le SMS chauffeur
     # vers le numéro vérifié DEMO_PHONE_NUMBER.
     use_demo = st.secrets.get("USE_DEMO_PHONE_NUMBER", True)
+    if isinstance(use_demo, str):
+        use_demo = use_demo.strip().lower() in ["true", "1", "yes", "oui"]
+
     target_number = st.secrets["DEMO_PHONE_NUMBER"] if use_demo else telephone
 
     body = (
@@ -313,14 +393,18 @@ def init_data():
             "telephone_chauffeur", "immatriculation", "latitude",
             "longitude", "type_panne", "lieu", "dimension", "urgence",
             "statut", "depanneur_assigne", "distance_km", "mode_paiement",
-            "commentaire", "photo_1", "photo_2", "date_cloture"
+            "commentaire", "photo_1", "photo_2", "date_cloture",
+            "depanneur_nom", "depanneur_telephone", "depanneur_latitude",
+            "depanneur_longitude", "eta_minutes", "tracking_url",
+            "date_prise_en_charge"
         ]).to_csv(DEMANDES_FILE, index=False)
 
     if not TENTATIVES_FILE.exists():
         pd.DataFrame(columns=[
             "id", "demande_id", "rang", "depanneur_id",
             "depanneur_nom", "distance_km", "canal",
-            "statut", "date_tentative"
+            "statut", "date_tentative", "depanneur_telephone",
+            "depanneur_latitude", "depanneur_longitude"
         ]).to_csv(TENTATIVES_FILE, index=False)
 
 
@@ -334,6 +418,39 @@ def load_csv(path):
 
 def save_csv(df, path):
     df.to_csv(path, index=False)
+
+
+def ensure_columns(path, columns_defaults):
+    df = load_csv(path)
+    changed = False
+
+    for column, default_value in columns_defaults.items():
+        if column not in df.columns:
+            df[column] = default_value
+            changed = True
+
+    if changed:
+        save_csv(df, path)
+
+    return df
+
+
+def ensure_data_schema():
+    ensure_columns(DEMANDES_FILE, {
+        "depanneur_nom": "",
+        "depanneur_telephone": "",
+        "depanneur_latitude": "",
+        "depanneur_longitude": "",
+        "eta_minutes": "",
+        "tracking_url": "",
+        "date_prise_en_charge": "",
+    })
+
+    ensure_columns(TENTATIVES_FILE, {
+        "depanneur_telephone": "",
+        "depanneur_latitude": "",
+        "depanneur_longitude": "",
+    })
 
 
 # ============================================================
@@ -466,6 +583,63 @@ def afficher_carte_depanneurs(latitude, longitude, candidats, client, chauffeur,
 
 
 # ============================================================
+# SUIVI CHAUFFEUR MOBILE
+# ============================================================
+
+def afficher_suivi_chauffeur(demande):
+    statut = demande.get("statut", "En cours")
+    depanneur_nom = demande.get("depanneur_nom", "") or demande.get("depanneur_assigne", "")
+    depanneur_tel = demande.get("depanneur_telephone", "")
+    distance = demande.get("distance_km", "")
+    eta = demande.get("eta_minutes", "")
+    tracking_url = demande.get("tracking_url", "")
+    immatriculation = demande.get("immatriculation", "")
+    type_panne = demande.get("type_panne", "")
+
+    if not depanneur_nom:
+        depanneur_nom = "Dépanneur en cours d’affectation"
+
+    if not eta or str(eta).lower() == "nan":
+        eta_label = "En cours"
+    else:
+        eta_label = f"{eta} min"
+
+    st.markdown(
+        f"""
+        <div class="mobile-card">
+            <div class="mobile-card-title">🚛 Votre dépannage</div>
+            <div class="mobile-status">{statut}</div>
+            <br>
+            <b>Véhicule :</b> {immatriculation}<br>
+            <b>Panne :</b> {type_panne}<br>
+            <b>Agence / dépanneur :</b> {depanneur_nom}<br>
+            <b>Téléphone :</b> {depanneur_tel if depanneur_tel else "—"}<br>
+            <b>Distance :</b> {distance if str(distance).lower() != "nan" else "—"} km
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    st.metric("Temps estimé d'arrivée", eta_label)
+
+    if depanneur_tel and str(depanneur_tel).lower() != "nan":
+        st.link_button(
+            "📞 Appeler le dépanneur",
+            f"tel:{depanneur_tel}",
+            use_container_width=True
+        )
+
+    if tracking_url and str(tracking_url).lower() != "nan":
+        st.link_button(
+            "🗺️ Suivre / voir l’itinéraire",
+            tracking_url,
+            use_container_width=True
+        )
+
+    st.info("Le suivi temps réel GPS du dépanneur sera ajouté dans une prochaine étape. Pour le MVP, ce bouton ouvre l’itinéraire Google Maps.")
+
+
+# ============================================================
 # CASCADE DE SOLLICITATION
 # ============================================================
 
@@ -484,6 +658,9 @@ def creer_tentatives(demande_id, candidats):
             "canal": "Appel + SMS + Email",
             "statut": "En attente" if rang == 1 else "En file",
             "date_tentative": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "depanneur_telephone": d.get("telephone", ""),
+            "depanneur_latitude": d.get("latitude", ""),
+            "depanneur_longitude": d.get("longitude", ""),
         })
 
     save_csv(
@@ -517,9 +694,27 @@ def accepter_tentative(demande_id):
     ] = "Annulé"
 
     d_idx = demandes[demandes.id == demande_id].index[0]
+    dep_tel = tentatives.loc[idx, "depanneur_telephone"] if "depanneur_telephone" in tentatives.columns else ""
+    dep_lat = tentatives.loc[idx, "depanneur_latitude"] if "depanneur_latitude" in tentatives.columns else ""
+    dep_lon = tentatives.loc[idx, "depanneur_longitude"] if "depanneur_longitude" in tentatives.columns else ""
+
     demandes.loc[d_idx, "statut"] = "Accepté par dépanneur"
     demandes.loc[d_idx, "depanneur_assigne"] = nom
+    demandes.loc[d_idx, "depanneur_nom"] = nom
+    demandes.loc[d_idx, "depanneur_telephone"] = dep_tel
+    demandes.loc[d_idx, "depanneur_latitude"] = dep_lat
+    demandes.loc[d_idx, "depanneur_longitude"] = dep_lon
     demandes.loc[d_idx, "distance_km"] = dist
+    demandes.loc[d_idx, "eta_minutes"] = estimate_eta_minutes(dist)
+    demandes.loc[d_idx, "date_prise_en_charge"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    if dep_lat != "" and dep_lon != "":
+        demandes.loc[d_idx, "tracking_url"] = generate_google_maps_directions_link(
+            dep_lat,
+            dep_lon,
+            demandes.loc[d_idx, "latitude"],
+            demandes.loc[d_idx, "longitude"]
+        )
 
     save_csv(tentatives, TENTATIVES_FILE)
     save_csv(demandes, DEMANDES_FILE)
@@ -570,6 +765,7 @@ def cloturer(demande_id):
 # ============================================================
 
 init_data()
+ensure_data_schema()
 
 k1, k2, k3, k4 = st.columns(4)
 
@@ -619,6 +815,27 @@ tab1, tab2, tab3, tab4 = st.tabs([
 
 with tab1:
     st.subheader("Créer une demande de dépannage")
+
+    demandes_existantes = load_csv(DEMANDES_FILE)
+    statuts_ouverts = [
+        "Recherche dépanneur",
+        "Accepté par dépanneur",
+        "A traiter manuellement"
+    ]
+
+    if not demandes_existantes.empty:
+        demandes_ouvertes = demandes_existantes[
+            demandes_existantes["statut"].isin(statuts_ouverts)
+        ]
+
+        if not demandes_ouvertes.empty:
+            derniere_demande = demandes_ouvertes.sort_values(
+                "date_creation",
+                ascending=False
+            ).iloc[0]
+
+            afficher_suivi_chauffeur(derniere_demande)
+            st.divider()
 
     ok_twilio, missing_key = twilio_is_configured()
 
@@ -758,6 +975,13 @@ with tab1:
             "photo_1": photo_flanc.name if photo_flanc else "",
             "photo_2": photo_avarie.name if photo_avarie else "",
             "date_cloture": "",
+            "depanneur_nom": "",
+            "depanneur_telephone": "",
+            "depanneur_latitude": "",
+            "depanneur_longitude": "",
+            "eta_minutes": "",
+            "tracking_url": "",
+            "date_prise_en_charge": "",
         }
 
         candidats = trouver_depanneurs(demande, depanneurs)
@@ -766,6 +990,20 @@ with tab1:
             demande["statut"] = "A traiter manuellement"
             st.error("Aucun dépanneur éligible trouvé. Bascule en traitement manuel.")
         else:
+            best_depanneur = candidats.iloc[0].to_dict()
+            demande["depanneur_nom"] = best_depanneur.get("nom", "")
+            demande["depanneur_telephone"] = best_depanneur.get("telephone", "")
+            demande["depanneur_latitude"] = best_depanneur.get("latitude", "")
+            demande["depanneur_longitude"] = best_depanneur.get("longitude", "")
+            demande["distance_km"] = best_depanneur.get("distance_km", "")
+            demande["eta_minutes"] = estimate_eta_minutes(best_depanneur.get("distance_km", ""))
+            demande["tracking_url"] = generate_google_maps_directions_link(
+                best_depanneur.get("latitude", ""),
+                best_depanneur.get("longitude", ""),
+                latitude,
+                longitude
+            )
+
             afficher_carte_depanneurs(
                 latitude=latitude,
                 longitude=longitude,
