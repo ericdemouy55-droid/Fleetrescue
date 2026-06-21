@@ -167,6 +167,256 @@ st.markdown("""
 
 
 # ============================================================
+# STYLE UI SAAS FLEETRESCUE — AJOUT V1
+# ============================================================
+
+st.markdown("""
+<style>
+:root {
+    --fr-navy: #07111f;
+    --fr-navy-2: #0f172a;
+    --fr-blue: #2563eb;
+    --fr-cyan: #06b6d4;
+    --fr-green: #22c55e;
+    --fr-orange: #f97316;
+    --fr-red: #ef4444;
+    --fr-gray: #64748b;
+    --fr-light: #f8fafc;
+    --fr-card: #ffffff;
+    --fr-border: rgba(15, 23, 42, 0.10);
+}
+
+.fr-hero {
+    background: radial-gradient(circle at top left, rgba(37,99,235,0.35), transparent 35%),
+                linear-gradient(135deg, #07111f 0%, #111827 52%, #0f172a 100%);
+    color: white;
+    border-radius: 24px;
+    padding: 24px 28px;
+    margin: 4px 0 20px 0;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.24);
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.fr-hero-title {
+    font-size: 28px;
+    line-height: 1.1;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+}
+
+.fr-hero-subtitle {
+    color: #cbd5e1;
+    font-size: 15px;
+}
+
+.fr-section-title {
+    font-size: 20px;
+    font-weight: 850;
+    color: #0f172a;
+    margin: 8px 0 12px 0;
+    letter-spacing: -0.02em;
+}
+
+.fr-card {
+    background: rgba(255,255,255,0.96);
+    border: 1px solid var(--fr-border);
+    border-radius: 22px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+}
+
+.fr-card-dark {
+    background: linear-gradient(145deg, #0f172a, #111827);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 22px;
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.22);
+}
+
+.fr-kpi {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--fr-border);
+    padding: 16px 18px;
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.07);
+    min-height: 112px;
+    position: relative;
+    overflow: hidden;
+}
+
+.fr-kpi:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle, rgba(37,99,235,0.16), transparent 70%);
+}
+
+.fr-kpi-label {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.fr-kpi-value {
+    font-size: 34px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.04em;
+    margin-top: 8px;
+}
+
+.fr-kpi-foot {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.fr-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-weight: 850;
+    font-size: 12px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+}
+.fr-badge-blue { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
+.fr-badge-green { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.fr-badge-orange { background: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+.fr-badge-red { background: #fee2e2; color: #b91c1c; border-color: #fecaca; }
+.fr-badge-gray { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+
+.fr-muted { color: #64748b; }
+.fr-strong { font-weight: 850; color: #0f172a; }
+.fr-white-muted { color: #cbd5e1; }
+
+.fr-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    border-bottom: 1px solid rgba(15,23,42,0.08);
+    padding: 9px 0;
+    font-size: 14px;
+}
+.fr-info-row:last-child { border-bottom: 0; }
+.fr-info-label { color: #64748b; font-weight: 650; }
+.fr-info-value { color: #0f172a; font-weight: 800; text-align: right; }
+
+.fr-responder-card {
+    background: white;
+    border: 1px solid rgba(15,23,42,0.10);
+    border-radius: 18px;
+    padding: 14px;
+    margin-bottom: 10px;
+    box-shadow: 0 8px 25px rgba(15, 23, 42, 0.06);
+}
+
+.fr-responder-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.fr-responder-name {
+    font-size: 16px;
+    font-weight: 900;
+    color: #0f172a;
+}
+
+.fr-score {
+    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    color: white;
+    border-radius: 14px;
+    padding: 7px 10px;
+    font-weight: 900;
+    min-width: 58px;
+    text-align: center;
+}
+
+.fr-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.fr-mini {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 10px;
+    border: 1px solid #e2e8f0;
+}
+.fr-mini-label { color: #64748b; font-size: 11px; font-weight: 750; text-transform: uppercase; }
+.fr-mini-value { color: #0f172a; font-size: 15px; font-weight: 900; margin-top: 2px; }
+
+.fr-timeline {
+    display: flex;
+    gap: 7px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.fr-step {
+    border-radius: 999px;
+    padding: 7px 10px;
+    font-size: 12px;
+    font-weight: 800;
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+.fr-step-active {
+    background: #dbeafe;
+    color: #1d4ed8;
+    border-color: #bfdbfe;
+}
+.fr-step-done {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #bbf7d0;
+}
+
+.fr-empty {
+    background: linear-gradient(135deg, #fff7ed, #ffffff);
+    border: 1px dashed #fdba74;
+    color: #9a3412;
+    border-radius: 20px;
+    padding: 22px;
+    font-weight: 750;
+}
+
+/* Rend les boutons plus SaaS, sans casser Streamlit */
+.stButton>button {
+    border-radius: 14px !important;
+    font-weight: 850 !important;
+    min-height: 44px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.10);
+}
+
+@media (max-width: 768px) {
+    .fr-hero-title { font-size: 22px; }
+    .fr-kpi-value { font-size: 26px; }
+    .fr-mini-grid { grid-template-columns: 1fr; }
+    .fr-info-row { display: block; }
+    .fr-info-value { text-align: left; margin-top: 3px; }
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+# ============================================================
 # TWILIO
 # ============================================================
 
@@ -1098,6 +1348,285 @@ def afficher_app_depanneur():
 
 
 # ============================================================
+# UI COCKPIT OPÉRATEUR — HELPERS V1
+# ============================================================
+
+def ui_safe(value, default="—"):
+    try:
+        if pd.isna(value):
+            return default
+    except Exception:
+        pass
+    value = str(value).strip()
+    if value == "" or value.lower() in ["nan", "none", "null"]:
+        return default
+    return value
+
+
+def ui_status_class(statut):
+    statut = ui_safe(statut, "").lower()
+    if "danger" in statut or "manuel" in statut:
+        return "fr-badge-red"
+    if "clôturé" in statut or "cloture" in statut or "accepté" in statut or "accepte" in statut:
+        return "fr-badge-green"
+    if "route" in statut or "place" in statut or "propos" in statut or "recherche" in statut:
+        return "fr-badge-orange"
+    return "fr-badge-blue"
+
+
+def ui_stock_badge(value):
+    return "fr-badge-green" if to_bool(value) else "fr-badge-orange"
+
+
+def render_operator_hero():
+    st.markdown("""
+    <div class="fr-hero">
+        <div class="fr-hero-title">🎯 Cockpit Opérateur FleetRescue</div>
+        <div class="fr-hero-subtitle">
+            Supervision temps réel des interventions • Dispatch IA • Stock simulé Winpro/Inovaxo • Cascade dépanneurs
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def render_operator_kpis(demandes, tentatives):
+    if demandes.empty:
+        total = actifs = danger = clotures = 0
+        avg_eta = "—"
+    else:
+        total = len(demandes)
+        actifs = len(demandes[~demandes["statut"].isin(["Clôturé", "Cloturé", "Annulé", "Annule"])] ) if "statut" in demandes.columns else total
+        danger = len(demandes[demandes["urgence"].astype(str).str.contains("Danger", case=False, na=False)]) if "urgence" in demandes.columns else 0
+        clotures = len(demandes[demandes["statut"].astype(str).str.contains("Clôturé|Cloturé", case=False, na=False)]) if "statut" in demandes.columns else 0
+        if "eta_minutes" in demandes.columns:
+            eta_numeric = pd.to_numeric(demandes["eta_minutes"], errors="coerce").dropna()
+            avg_eta = f"{int(round(eta_numeric.mean()))} min" if len(eta_numeric) else "—"
+        else:
+            avg_eta = "—"
+
+    if tentatives.empty or "statut" not in tentatives.columns:
+        accept_rate = "—"
+    else:
+        sent = len(tentatives[tentatives["statut"].isin(["Accepté", "Expiré / pas de réponse", "En attente", "Annulé"])])
+        accepted = len(tentatives[tentatives["statut"].astype(str).str.contains("Accepté|Accepte", case=False, na=False)])
+        accept_rate = f"{round((accepted / sent) * 100)}%" if sent else "—"
+
+    c1, c2, c3, c4, c5 = st.columns(5)
+    cards = [
+        (c1, "Interventions", total, "Total demandes"),
+        (c2, "Actives", actifs, "À superviser"),
+        (c3, "Danger", danger, "Voie rapide / risque"),
+        (c4, "ETA moyen", avg_eta, "Sur demandes affectées"),
+        (c5, "Acceptation", accept_rate, "Cascade dépanneurs"),
+    ]
+    for col, label, value, foot in cards:
+        with col:
+            st.markdown(f"""
+            <div class="fr-kpi">
+                <div class="fr-kpi-label">{label}</div>
+                <div class="fr-kpi-value">{value}</div>
+                <div class="fr-kpi-foot">{foot}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
+
+def render_timeline(statut):
+    steps = [
+        "Créée",
+        "Recherche",
+        "Proposée",
+        "Acceptée",
+        "En route",
+        "Sur place",
+        "Clôturée",
+    ]
+    statut_lower = ui_safe(statut, "").lower()
+    active_index = 0
+    if "recherche" in statut_lower:
+        active_index = 1
+    elif "propos" in statut_lower or "mission" in statut_lower:
+        active_index = 2
+    elif "accept" in statut_lower:
+        active_index = 3
+    elif "route" in statut_lower:
+        active_index = 4
+    elif "place" in statut_lower:
+        active_index = 5
+    elif "clôt" in statut_lower or "clot" in statut_lower:
+        active_index = 6
+    elif "manuel" in statut_lower:
+        active_index = 2
+
+    html = '<div class="fr-timeline">'
+    for i, step in enumerate(steps):
+        klass = "fr-step-done" if i < active_index else "fr-step-active" if i == active_index else ""
+        html += f'<span class="fr-step {klass}">{step}</span>'
+    html += '</div>'
+    st.markdown(html, unsafe_allow_html=True)
+
+
+def render_intervention_card(demande):
+    statut = ui_safe(demande.get("statut", ""))
+    badge_class = ui_status_class(statut)
+    urgence = ui_safe(demande.get("urgence", ""))
+    urgency_class = "fr-badge-red" if "Danger" in urgence else "fr-badge-orange" if "Urgent" in urgence else "fr-badge-blue"
+
+    st.markdown(f"""
+    <div class="fr-card-dark">
+        <div style="display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:12px;">
+            <div>
+                <div style="font-size:13px; color:#94a3b8; font-weight:800; text-transform:uppercase; letter-spacing:.08em;">Intervention sélectionnée</div>
+                <div style="font-size:30px; font-weight:950; letter-spacing:-.04em; margin-top:4px;">{ui_safe(demande.get('id', ''))}</div>
+                <div class="fr-white-muted" style="margin-top:3px;">{ui_safe(demande.get('client', ''))} • {ui_safe(demande.get('immatriculation', ''))}</div>
+            </div>
+            <div style="text-align:right;">
+                <span class="fr-badge {badge_class}">{statut}</span><br><br>
+                <span class="fr-badge {urgency_class}">{urgence}</span>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    render_timeline(statut)
+
+    st.markdown(f"""
+    <div class="fr-card">
+        <div class="fr-info-row"><div class="fr-info-label">Chauffeur</div><div class="fr-info-value">{ui_safe(demande.get('chauffeur', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Téléphone</div><div class="fr-info-value">{ui_safe(demande.get('telephone_chauffeur', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Panne</div><div class="fr-info-value">{ui_safe(demande.get('type_panne', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Dimension</div><div class="fr-info-value">{ui_safe(demande.get('dimension', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Lieu</div><div class="fr-info-value">{ui_safe(demande.get('lieu', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Création</div><div class="fr-info-value">{ui_safe(demande.get('date_creation', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Commentaire</div><div class="fr-info-value">{ui_safe(demande.get('commentaire', ''))}</div></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def render_ai_stock_card(demande):
+    stock_ok = demande.get("stock_disponible", False)
+    stock_class = ui_stock_badge(stock_ok)
+    stock_label = "Stock confirmé" if to_bool(stock_ok) else "Stock non confirmé"
+    eta = ui_safe(demande.get("eta_minutes", ""))
+    eta_label = f"{eta} min" if eta != "—" and "min" not in eta else eta
+
+    st.markdown(f"""
+    <div class="fr-card">
+        <div class="fr-section-title">🧠 Décision IA</div>
+        <span class="fr-badge {stock_class}">{stock_label}</span>
+        <div class="fr-mini-grid">
+            <div class="fr-mini"><div class="fr-mini-label">Score IA</div><div class="fr-mini-value">{ui_safe(demande.get('score_ia', ''))}</div></div>
+            <div class="fr-mini"><div class="fr-mini-label">Distance</div><div class="fr-mini-value">{ui_safe(demande.get('distance_km', ''))} km</div></div>
+            <div class="fr-mini"><div class="fr-mini-label">ETA</div><div class="fr-mini-value">{eta_label}</div></div>
+        </div>
+        <div class="fr-info-row"><div class="fr-info-label">Dépanneur</div><div class="fr-info-value">{ui_safe(demande.get('depanneur_nom', demande.get('depanneur_assigne', '')))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Téléphone</div><div class="fr-info-value">{ui_safe(demande.get('depanneur_telephone', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Stock</div><div class="fr-info-value">Qté {ui_safe(demande.get('stock_quantite', '0'))} — {ui_safe(demande.get('stock_marque', ''))} {ui_safe(demande.get('stock_profil', ''))}</div></div>
+        <div class="fr-info-row"><div class="fr-info-label">Raison IA</div><div class="fr-info-value">{ui_safe(demande.get('decision_ia', ''))}</div></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    tracking_url = ui_safe(demande.get("tracking_url", ""), "")
+    if tracking_url:
+        st.link_button("🗺️ Ouvrir itinéraire Google Maps", tracking_url, use_container_width=True)
+
+
+def render_responder_cards(current):
+    st.markdown('<div class="fr-section-title">🛠 Cascade dépanneurs recommandés</div>', unsafe_allow_html=True)
+    if current.empty:
+        st.markdown('<div class="fr-empty">Aucune cascade créée pour cette demande.</div>', unsafe_allow_html=True)
+        return
+
+    for _, row in current.sort_values("rang").head(5).iterrows():
+        statut = ui_safe(row.get("statut", ""))
+        badge = ui_status_class(statut)
+        stock_class = ui_stock_badge(row.get("stock_disponible", False))
+        stock_label = "Stock OK" if to_bool(row.get("stock_disponible", False)) else "Stock ?"
+        score = ui_safe(row.get("score_ia", ""))
+        st.markdown(f"""
+        <div class="fr-responder-card">
+            <div class="fr-responder-top">
+                <div>
+                    <div class="fr-responder-name">#{ui_safe(row.get('rang', ''))} — {ui_safe(row.get('depanneur_nom', ''))}</div>
+                    <div class="fr-muted">{ui_safe(row.get('distance_km', ''))} km • {ui_safe(row.get('canal', ''))}</div>
+                </div>
+                <div class="fr-score">{score}</div>
+            </div>
+            <span class="fr-badge {badge}">{statut}</span>
+            <span class="fr-badge {stock_class}">{stock_label} · Qté {ui_safe(row.get('stock_quantite', '0'))}</span>
+            <div class="fr-muted" style="margin-top:8px; font-size:13px;">
+                {ui_safe(row.get('stock_marque', ''))} {ui_safe(row.get('stock_profil', ''))}<br>
+                {ui_safe(row.get('decision_ia', ''))}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+def afficher_carte_superviseur(demande, current):
+    try:
+        lat = float(demande.get("latitude", 49.25))
+        lon = float(demande.get("longitude", 2.65))
+    except Exception:
+        st.warning("Coordonnées GPS invalides pour cette demande.")
+        return
+
+    m = folium.Map(location=[lat, lon], zoom_start=8, tiles="CartoDB positron")
+
+    folium.Marker(
+        location=[lat, lon],
+        tooltip="Camion en panne",
+        popup=f"""
+        <b>🚛 Camion en panne</b><br>
+        ID : {ui_safe(demande.get('id', ''))}<br>
+        Client : {ui_safe(demande.get('client', ''))}<br>
+        Véhicule : {ui_safe(demande.get('immatriculation', ''))}<br>
+        Panne : {ui_safe(demande.get('type_panne', ''))}<br>
+        Dimension : {ui_safe(demande.get('dimension', ''))}
+        """,
+        icon=folium.Icon(color="red", icon="truck", prefix="fa")
+    ).add_to(m)
+
+    folium.CircleMarker(
+        location=[lat, lon],
+        radius=16,
+        color="#ef4444",
+        fill=True,
+        fill_color="#ef4444",
+        fill_opacity=0.25,
+    ).add_to(m)
+
+    if not current.empty:
+        for _, d in current.iterrows():
+            dep_lat = ui_safe(d.get("depanneur_latitude", ""), "")
+            dep_lon = ui_safe(d.get("depanneur_longitude", ""), "")
+            if not dep_lat or not dep_lon:
+                continue
+            try:
+                dep_lat = float(dep_lat)
+                dep_lon = float(dep_lon)
+            except Exception:
+                continue
+
+            statut = ui_safe(d.get("statut", ""))
+            color = "green" if "Accept" in statut or "Accepté" in statut else "orange" if "attente" in statut.lower() else "blue"
+            folium.Marker(
+                location=[dep_lat, dep_lon],
+                tooltip=f"{ui_safe(d.get('depanneur_nom', ''))} — {ui_safe(d.get('distance_km', ''))} km",
+                popup=f"""
+                <b>🛠️ {ui_safe(d.get('depanneur_nom', ''))}</b><br>
+                Rang : {ui_safe(d.get('rang', ''))}<br>
+                Statut : {statut}<br>
+                Distance : {ui_safe(d.get('distance_km', ''))} km<br>
+                Stock : {'Oui' if to_bool(d.get('stock_disponible', False)) else 'Non confirmé'}<br>
+                Score IA : {ui_safe(d.get('score_ia', ''))}
+                """,
+                icon=folium.Icon(color=color, icon="wrench", prefix="fa")
+            ).add_to(m)
+            folium.PolyLine([[lat, lon], [dep_lat, dep_lon]], color="#2563eb", weight=2, opacity=0.45).add_to(m)
+
+    components.html(m._repr_html_(), height=520)
+
+
+# ============================================================
 # LANCEMENT APP
 # ============================================================
 
@@ -1139,11 +1668,11 @@ with k4:
     """, unsafe_allow_html=True)
 
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "🚨 Demande chauffeur",
-    "📱 App dépanneur",
-    "🧭 Superviseur",
-    "🛠️ Référentiel",
-    "📊 Reporting"
+    "🚛 Chauffeur",
+    "🛠️ Dépanneur",
+    "🎯 Cockpit opérateur",
+    "⚙️ Administration",
+    "📈 KPI"
 ])
 
 
@@ -1476,61 +2005,89 @@ with tab2:
     afficher_app_depanneur()
 
 
+
 # ============================================================
-# ONGLET 3 — SUPERVISEUR
+# ONGLET 3 — COCKPIT OPÉRATEUR
 # ============================================================
 
 with tab3:
-    st.subheader("Tableau superviseur")
+    render_operator_hero()
 
     demandes = load_csv(DEMANDES_FILE)
     tentatives = load_csv(TENTATIVES_FILE)
 
+    render_operator_kpis(demandes, tentatives)
+
     if demandes.empty:
-        st.info("Aucune demande pour le moment.")
+        st.markdown("""
+        <div class="fr-empty">
+            Aucune demande pour le moment. Crée une demande depuis l’onglet Chauffeur pour alimenter le cockpit.
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.dataframe(
-            demandes.sort_values("date_creation", ascending=False),
-            use_container_width=True,
-            hide_index=True
-        )
+        st.markdown('<div class="fr-section-title">📍 Intervention à superviser</div>', unsafe_allow_html=True)
+
+        demandes_view = demandes.sort_values("date_creation", ascending=False).copy()
+
+        def format_demande_option(x):
+            row = demandes_view[demandes_view["id"] == x].iloc[0]
+            return f"{x} — {ui_safe(row.get('immatriculation', ''))} — {ui_safe(row.get('statut', ''))}"
 
         selected_id = st.selectbox(
             "Sélectionner une demande",
-            demandes["id"].tolist()
+            demandes_view["id"].tolist(),
+            format_func=format_demande_option,
+            label_visibility="collapsed"
         )
 
-        st.markdown("### Cascade")
+        demande = demandes_view[demandes_view["id"] == selected_id].iloc[0]
+        current = tentatives[tentatives.demande_id == selected_id].sort_values("rang") if not tentatives.empty else pd.DataFrame()
 
-        current = tentatives[tentatives.demande_id == selected_id].sort_values("rang")
+        left, right = st.columns([1.45, 1])
 
-        st.dataframe(
-            current,
-            use_container_width=True,
-            hide_index=True
-        )
+        with left:
+            st.markdown('<div class="fr-section-title">🗺️ Carte opérationnelle</div>', unsafe_allow_html=True)
+            afficher_carte_superviseur(demande, current)
 
-        active = current[current.statut == "En attente"]
+            st.markdown('<div class="fr-section-title">🧾 Données brutes</div>', unsafe_allow_html=True)
+            with st.expander("Afficher / masquer les tables techniques"):
+                st.markdown("Demandes")
+                st.dataframe(
+                    demandes_view,
+                    use_container_width=True,
+                    hide_index=True
+                )
+                st.markdown("Cascade")
+                st.dataframe(
+                    current,
+                    use_container_width=True,
+                    hide_index=True
+                )
 
-        if len(active):
-            row = active.iloc[0]
-            st.warning(
-                f"Sollicitation en cours : {row.depanneur_nom} — {row.distance_km} km — {row.canal}"
-            )
+        with right:
+            render_intervention_card(demande)
+            render_ai_stock_card(demande)
 
-        c1, c2, c3 = st.columns(3)
+            st.markdown('<div class="fr-section-title">⚡ Actions opérateur</div>', unsafe_allow_html=True)
+            c1, c2 = st.columns(2)
+            if c1.button("✅ Accepter", type="primary", use_container_width=True):
+                accepter_tentative(selected_id)
+                st.rerun()
 
-        if c1.button("✅ Simuler acceptation", type="primary"):
-            accepter_tentative(selected_id)
-            st.rerun()
+            if c2.button("⏱️ Suivant", use_container_width=True):
+                passer_au_suivant(selected_id)
+                st.rerun()
 
-        if c2.button("⏱️ Pas de réponse → suivant"):
-            passer_au_suivant(selected_id)
-            st.rerun()
+            c3, c4 = st.columns(2)
+            if c3.button("🚚 En route", use_container_width=True):
+                update_demande_status(selected_id, "Dépanneur en route")
+                st.rerun()
 
-        if c3.button("🏁 Clôturer intervention"):
-            cloturer(selected_id)
-            st.rerun()
+            if c4.button("🏁 Clôturer", use_container_width=True):
+                cloturer(selected_id)
+                st.rerun()
+
+            render_responder_cards(current)
 
 
 # ============================================================
