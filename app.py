@@ -182,6 +182,137 @@ h1, h2, h3, h4, h5, h6, .stMarkdown, label, p { color: #e5eefb !important; }
     .fr-info-row { display:block; }
     .fr-info-value { text-align:left; margin-top:3px; }
 }
+
+
+/* ============================================================
+   CORRECTION LISIBILITÉ FORMULAIRES V4
+   Champs blanc cassé + texte noir
+   ============================================================ */
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea,
+.stDateInput input,
+.stTimeInput input {
+    background-color: #f8f3e8 !important;
+    color: #111827 !important;
+    border: 1px solid #d6cfc2 !important;
+    border-radius: 16px !important;
+    font-weight: 750 !important;
+    caret-color: #111827 !important;
+}
+
+.stTextInput input:focus,
+.stNumberInput input:focus,
+.stTextArea textarea:focus,
+.stDateInput input:focus,
+.stTimeInput input:focus {
+    background-color: #fffaf0 !important;
+    color: #111827 !important;
+    border: 2px solid #38bdf8 !important;
+    box-shadow: 0 0 0 3px rgba(56,189,248,0.20) !important;
+}
+
+.stTextInput input::placeholder,
+.stNumberInput input::placeholder,
+.stTextArea textarea::placeholder {
+    color: #6b7280 !important;
+    opacity: 1 !important;
+}
+
+/* Selectbox fermé : type de panne, dimension, urgence */
+div[data-baseweb="select"] > div,
+.stSelectbox div[data-baseweb="select"] > div {
+    background-color: #f8f3e8 !important;
+    color: #111827 !important;
+    border: 1px solid #d6cfc2 !important;
+    border-radius: 16px !important;
+}
+
+/* Texte et icônes des selectbox */
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] div,
+div[data-baseweb="select"] svg {
+    color: #111827 !important;
+    fill: #111827 !important;
+    font-weight: 750 !important;
+}
+
+/* Menu déroulant ouvert */
+ul[role="listbox"],
+div[role="listbox"] {
+    background-color: #f8f3e8 !important;
+    color: #111827 !important;
+    border: 1px solid #d6cfc2 !important;
+}
+
+li[role="option"],
+div[role="option"] {
+    background-color: #f8f3e8 !important;
+    color: #111827 !important;
+    font-weight: 750 !important;
+}
+
+li[role="option"]:hover,
+div[role="option"]:hover {
+    background-color: #efe3cf !important;
+    color: #111827 !important;
+}
+
+/* Boutons + / - des champs numériques */
+[data-testid="stNumberInput"] button {
+    background-color: #f1eadc !important;
+    color: #111827 !important;
+    border: 1px solid #d6cfc2 !important;
+}
+
+[data-testid="stNumberInput"] button svg {
+    color: #111827 !important;
+    fill: #111827 !important;
+}
+
+/* Radios : on garde le libellé clair sur fond sombre */
+.stRadio > div {
+    background: rgba(248, 243, 232, 0.08) !important;
+    border-radius: 16px !important;
+    padding: 8px 12px !important;
+}
+
+.stRadio label,
+.stRadio label span,
+.stRadio p {
+    color: #f8fafc !important;
+    font-weight: 750 !important;
+}
+
+/* Labels de champs */
+label,
+[data-testid="stWidgetLabel"] p {
+    color: #e5eefb !important;
+    font-weight: 850 !important;
+}
+
+/* File uploader */
+.stFileUploader section {
+    background-color: #f8f3e8 !important;
+    color: #111827 !important;
+    border: 1px dashed #d6cfc2 !important;
+    border-radius: 18px !important;
+}
+
+.stFileUploader section div,
+.stFileUploader section span,
+.stFileUploader section p,
+.stFileUploader section small {
+    color: #111827 !important;
+}
+
+/* Data editor / tables restent lisibles dans l'administration */
+[data-testid="stDataFrame"],
+[data-testid="stDataEditor"] {
+    border-radius: 18px !important;
+    overflow: hidden !important;
+}
+
 </style>
 """,
     unsafe_allow_html=True,
