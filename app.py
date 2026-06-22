@@ -1,4 +1,7 @@
-from twilio.rest import Client
+try:
+    from twilio.rest import Client
+except Exception:
+    Client = None
 import math
 import uuid
 from datetime import datetime
@@ -453,14 +456,23 @@ def trouver_depanneurs(demande, depanneurs):
 # ============================================================
 
 def twilio_is_configured():
+    if Client is None:
+        return False, "package twilio non installé dans requirements.txt"
+
     required_keys = ["TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_FROM_NUMBER", "DEMO_PHONE_NUMBER"]
-    for key in required_keys:
-        if key not in st.secrets:
-            return False, key
+    try:
+        for key in required_keys:
+            if key not in st.secrets:
+                return False, key
+    except Exception:
+        return False, "secrets Streamlit non configurés"
+
     return True, ""
 
 
 def get_twilio_client():
+    if Client is None:
+        raise RuntimeError("Le package twilio n'est pas installé. Ajoute twilio dans requirements.txt ou désactive l'envoi SMS.")
     return Client(st.secrets["TWILIO_ACCOUNT_SID"], st.secrets["TWILIO_AUTH_TOKEN"])
 
 
@@ -840,7 +852,7 @@ def render_top_kpis():
     if demandes.empty:
         actifs, eta, connected, taux_acceptation_5min = 0, "—", 128, "—"
     else:
-        actifs = len(demandes[~demandes["statut"].isin(["Clôturé", "Annulé"])] )
+        actifs = len(demandes[~demandes["statut"].astype(str).isin(["Clôturé", "Annulé", "Annule"])] )
         eta_numeric = pd.to_numeric(demandes.get("eta_minutes", pd.Series(dtype=float)), errors="coerce").dropna()
         eta = f"{int(round(eta_numeric.mean()))} min" if len(eta_numeric) else "—"
         connected = 128
@@ -1438,5 +1450,3 @@ with tab4:
     afficher_administration()
 with tab5:
     afficher_kpi()
-Acceptation cascade
-25%
