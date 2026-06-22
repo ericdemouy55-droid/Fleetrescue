@@ -777,6 +777,41 @@ def statut_confirme_cote_chauffeur(statut):
     return str(statut).strip() in ["Accepté par dépanneur", "Dépanneur en route", "Dépanneur sur place", "Clôturé"]
 
 
+def calculer_taux_acceptation_moins_5_min(demandes):
+    """
+    KPI métier : part des demandes acceptées par un dépanneur en moins de 5 minutes.
+
+    Numérateur : demandes avec date_prise_en_charge renseignée et délai <= 5 minutes
+    Dénominateur : demandes créées, hors demandes annulées
+    """
+    if demandes is None or demandes.empty:
+        return "—"
+
+    df = demandes.copy()
+
+    if "statut" in df.columns:
+        df = df[~df["statut"].astype(str).str.contains("Annulé|Annule", case=False, na=False)]
+
+    if df.empty or "date_creation" not in df.columns or "date_prise_en_charge" not in df.columns:
+        return "—"
+
+    df["date_creation_calc"] = pd.to_datetime(df["date_creation"], errors="coerce")
+    df["date_acceptation_calc"] = pd.to_datetime(df["date_prise_en_charge"], errors="coerce")
+
+    total_demandes = len(df[df["date_creation_calc"].notna()])
+    if total_demandes == 0:
+        return "—"
+
+    df_accept = df[df["date_creation_calc"].notna() & df["date_acceptation_calc"].notna()].copy()
+    if df_accept.empty:
+        return "0%"
+
+    delai_minutes = (df_accept["date_acceptation_calc"] - df_accept["date_creation_calc"]).dt.total_seconds() / 60
+    acceptees_moins_5 = int((delai_minutes <= 5).sum())
+
+    return f"{round((acceptees_moins_5 / total_demandes) * 100)}%"
+
+
 # ============================================================
 # VUES
 # ============================================================
@@ -803,24 +838,19 @@ def render_top_kpis():
     demandes = load_csv(DEMANDES_FILE)
     tentatives = load_csv(TENTATIVES_FILE)
     if demandes.empty:
-        actifs, eta, connected, sla = 0, "—", 128, "—"
+        actifs, eta, connected, taux_acceptation_5min = 0, "—", 128, "—"
     else:
         actifs = len(demandes[~demandes["statut"].isin(["Clôturé", "Annulé"])] )
         eta_numeric = pd.to_numeric(demandes.get("eta_minutes", pd.Series(dtype=float)), errors="coerce").dropna()
         eta = f"{int(round(eta_numeric.mean()))} min" if len(eta_numeric) else "—"
         connected = 128
-        if tentatives.empty:
-            sla = "—"
-        else:
-            accepted = len(tentatives[tentatives["statut"].astype(str).str.contains("Accepté|Accepte", case=False, na=False)])
-            sent = len(tentatives[tentatives["statut"].isin(["Accepté", "Expiré / pas de réponse", "En attente", "Annulé"])])
-            sla = f"{round(accepted / sent * 100)}%" if sent else "—"
+        taux_acceptation_5min = calculer_taux_acceptation_moins_5_min(demandes)
 
     labels = [
         ("Dépannages actifs", actifs),
         ("Temps moyen", eta),
         ("Dépanneurs connectés", connected),
-        ("Acceptation cascade", sla),
+        ("Acceptés < 5 min", taux_acceptation_5min),
     ]
     cols = st.columns(4)
     for col, (label, value) in zip(cols, labels):
@@ -1408,3 +1438,5 @@ with tab4:
     afficher_administration()
 with tab5:
     afficher_kpi()
+Acceptation cascade
+25%
