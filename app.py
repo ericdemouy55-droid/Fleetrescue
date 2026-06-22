@@ -1154,9 +1154,9 @@ def afficher_app_chauffeur():
             st.markdown("### 🛞 Analyse IA pneumatique")
             c1, c2 = st.columns(2)
             with c1:
-                st.image(photo_flanc, caption="Photo flanc pneu", use_container_width=True)
+                st.image(photo_flanc, caption="Photo flanc pneu", use_column_width=True)
             with c2:
-                st.image(photo_avarie, caption="Photo incident", use_container_width=True)
+                st.image(photo_avarie, caption="Photo incident", use_column_width=True)
             if st.button("🔍 Analyser les photos avec IA"):
                 with st.spinner("Analyse IA en cours..."):
                     resultat = analyser_pneu(photo_flanc, photo_avarie)
