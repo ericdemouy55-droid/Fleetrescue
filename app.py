@@ -357,12 +357,16 @@ TENTATIVES_COLUMNS = [
 
 def load_csv(path):
     try:
-        return pd.read_csv(path)
+        # Important avec pandas récent / Python 3.12 :
+        # Les colonnes vides d'un CSV peuvent être relues comme float64.
+        # Ensuite, pandas refuse d'y écrire du texte comme un nom de dépanneur.
+        # dtype=object garde les colonnes modifiables pour le flux démo.
+        return pd.read_csv(path, dtype=object)
     except Exception:
         if path == DEMANDES_FILE:
-            return pd.DataFrame(columns=DEMANDES_COLUMNS)
+            return pd.DataFrame(columns=DEMANDES_COLUMNS, dtype=object)
         if path == TENTATIVES_FILE:
-            return pd.DataFrame(columns=TENTATIVES_COLUMNS)
+            return pd.DataFrame(columns=TENTATIVES_COLUMNS, dtype=object)
         return pd.DataFrame()
 
 
