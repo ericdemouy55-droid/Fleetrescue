@@ -2,5 +2,6 @@ streamlit==1.35.0
 pandas==2.1.4
 pillow
 folium
+streamlit-folium
 twilio==9.8.0
 openai
